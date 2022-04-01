@@ -51,20 +51,29 @@ input[type=submit] {
 .main-nav {
   display: flex;
   justify-content: space-between;
-  background-color: blue;
+  background-color: #4285f4;
   height: 50px;
   color: white;
 }
 
 .main-logo {
   padding-left: 30px;
+  padding-top: 10px;
+  font-weight: 700;
+  font-size: larger;
 }
 
 .links {
   display: flex;
   padding-right: 30px;
+  padding-top: 10px;
 }
 
 .links > li {
   padding: 0 10px;
+}
+
+.link-logo {
+  width: 32px;
+  height: 32px;
 }
