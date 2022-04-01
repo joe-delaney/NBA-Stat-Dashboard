@@ -53,20 +53,28 @@ export default class View {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.resetPlayerAverages();
         let start = this.startSeasonToggle.value;
         let end = this.endSeasonToggle.value;
         this.iterateSeasons(start, end);
+        console.log(this.players[0]);
     }
 
     getSeasonAverages(season) {
         DataFetcher.getSeasonAverages(season, this.players[0].id)
             .then(data => {
-                console.log(data.data[0])
+                let averages = data.data[0];
+                this.players[0].updateAverages(averages);
+                // console.log(data.data[0])
             });
     }
 
     printPlayers() {
         console.log(this.players);
+    }
+
+    resetPlayerAverages() {
+        this.players.forEach((player) => player.resetAverages());
     }
 
 }
