@@ -1,0 +1,20 @@
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: blue;
+    height: 50px;
+    color: white;
+}
+
+.main-logo {
+    padding-left: 30px;
+}
+
+.links {
+    display: flex;
+    padding-right: 30px;
+}
+
+.links > li {
+    padding: 0 10px;
+}
