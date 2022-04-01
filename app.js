@@ -23,11 +23,25 @@ app.listen(PORT, () => {
     console.log(`Listening at localhost:${PORT}`);
 });
 
-app.get('/api', (request, response) => {
-    debugger;
+app.get('/search', (request, response) => {
     const urlStart = 'https://balldontlie.io/api/v1/players?';
     const searchTerm = request.query.searchTerm; // from query string
     const url = `${urlStart}search=${searchTerm}`;
+
+    console.log(`Fetching: ${url}`);
+
+    fetch(url) // AJAX request to API
+        .then(apiResponse => apiResponse.json())
+        .then(data => response.send(data))
+        .catch(error => response.send(error));
+});
+
+app.get('/season-average', (request, response) => {
+    console.log("Made it in here")
+    const urlStart = 'https://balldontlie.io/api/v1/season_averages?';
+    const season = request.query.season; // from query string
+    const playerId = request.query.playerId; //from query string
+    const url = `${urlStart}season=${season}&player_ids[]=${playerId}`;
 
     console.log(`Fetching: ${url}`);
 

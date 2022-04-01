@@ -26,11 +26,29 @@
             </li>
         </ul>
     </nav>
-    <nav class="player-search">
-        <form action="input">
-            <ul></ul>
+    <nav class="user-inputs">
+        <form class="player-search-form">
+            <input type="input" class="player-search-input" placeholder="Search for a player">
+            <input type="submit" value="Add Player">
+            <!-- <ul></ul> -->
         </form>
-        
+        <form class="other-inputs">
+            Start Season<input id=start-season type="number" min="1946" max="2021" step="1" value="2021" />
+            End Season<input id=end-season type="number" min="1946" max="2021" step="1" value="2021" />
+            <select id="metric">
+                <option value="" disabled selected>--Please Select--</option>
+                <option value="ppg">Points per game</option>
+                <option value="apg">Assists per game</option>
+                <option value="rpg">Rebounds per game</option>
+            </select>
+            <select id="chart">
+                <option value="" disabled selected>--Please Select--</option>
+                <option value="line">Line Chart</option>
+                <option value="bar">Bar Chart</option>
+                <option value="scatter">Scatterplot</option>
+            </select>
+            <input type="submit" value="Visualize Data">
+        </form>
     </nav>
 </body>
 
