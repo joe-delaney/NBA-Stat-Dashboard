@@ -1,7 +1,7 @@
 .main-nav {
     display: flex;
     justify-content: space-between;
-    background-color: #4285f4;
+    background-color: #5cdb95;
     height: 50px;
     color: white;
 }
@@ -11,6 +11,7 @@
     padding-top: 10px;
     font-weight: 700;
     font-size: 20px;
+    font-family: sans-serif;
 }
 
 .links {

@@ -1,7 +1,5 @@
-import Player from './player'
-import View from './view'
-
 const DataFetcher = {
+    //Gets player information from the backend (then from API)
     getPlayer: async function(query) {
         const response = await fetch(`/search?searchTerm=${encodeURIComponent(query)}`);
         if (!response.ok) {
@@ -11,6 +9,7 @@ const DataFetcher = {
         return playerData;
     },
 
+    //Gets season average information for all selected players from the backend (then from API)
     getSeasonAverages: async function(season, players) {
         let playerIds = [];
         players.forEach((player) => {
