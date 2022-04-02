@@ -33,10 +33,7 @@ export default class View {
                 alert("Please Narrow Your Search");
             } else {
                 this.addPlayer(new Player(playerData[0]));
-                //Do whatever you need to do in here after player is saved
-                this.printPlayers();
             }
-
         });
     }
 
@@ -60,15 +57,11 @@ export default class View {
         let end = this.endSeasonToggle.value;
         this.iterateSeasons(start, end);
         console.log(this.players);
-
-        
-        // console.log(this.getMetric(this.metricToggle.value, this.players[0]));
     }
 
     getSeasonAverages(season) {
         DataFetcher.getSeasonAverages(season, this.players)
             .then(data => {
-                debugger;
                 let averages = data.data;
                 this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
                 this.players.forEach((player, idx) => {

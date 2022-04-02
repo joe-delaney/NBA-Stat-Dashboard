@@ -44,3 +44,7 @@ button,
 input[type="submit"] {
   cursor: pointer;
 }
+
+body {
+  font-family: 'Arial';
+}

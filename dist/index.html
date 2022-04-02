@@ -33,24 +33,30 @@
             <!-- <ul></ul> -->
         </form>
         <form class="other-inputs">
-            Start Season<input id=start-season type="number" min="1946" max="2021" step="1" value="2021" />
-            End Season<input id=end-season type="number" min="1946" max="2021" step="1" value="2021" />
-            <select id="metric">
-                <option value="" disabled selected>--Please Select--</option>
-                <option value="ppg">Points per game</option>
-                <option value="apg">Assists per game</option>
-                <option value="rpg">Rebounds per game</option>
-                <option value="spg">Steals per game</option>
-                <option value="fg_pct">FG %</option>
-                <option value="fg3_pct">3pt FG %</option>
-            </select>
-            <select id="chart">
-                <option value="" disabled selected>--Please Select--</option>
-                <option value="line">Line Chart</option>
-                <option value="bar">Bar Chart</option>
-                <option value="scatter">Scatterplot</option>
-            </select>
-            <input type="submit" value="Visualize Data">
+            <label class="user-input-label">Start Season
+                <input class="user-input" id=start-season type="number" min="1946" max="2021" step="1" value="2021" />
+            </label>
+            <label class="user-input-label">End Season
+                <input class="user-input" id=end-season type="number" min="1946" max="2021" step="1" value="2021" />
+            </label>
+            <label class="user-input-label">Metric
+                <select class="user-input" id="metric">
+                    <option value="ppg" selected>Points per game</option>
+                    <option value="apg">Assists per game</option>
+                    <option value="rpg">Rebounds per game</option>
+                    <option value="spg">Steals per game</option>
+                    <option value="fg_pct">FG %</option>
+                    <option value="fg3_pct">3pt FG %</option>
+                </select>
+            </label>
+            <label class="user-input-label">Chart Type
+                <select class="user-input" id="chart">
+                    <option value="line" selected>Line Chart</option>
+                    <option value="bar">Bar Chart</option>
+                    <option value="scatter">Scatterplot</option>
+                </select>
+            </label>
+            <input class="button" type="submit" value="Visualize Data">
         </form>
     </nav>
 </body>

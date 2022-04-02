@@ -48,6 +48,10 @@ input[type=submit] {
   cursor: pointer;
 }
 
+body {
+  font-family: "Arial";
+}
+
 .main-nav {
   display: flex;
   justify-content: space-between;
@@ -60,7 +64,7 @@ input[type=submit] {
   padding-left: 30px;
   padding-top: 10px;
   font-weight: 700;
-  font-size: larger;
+  font-size: 20px;
 }
 
 .links {
@@ -105,7 +109,26 @@ input[type=submit] {
 }
 
 .button {
-  padding: 10px;
   border: none;
   border-radius: 3px;
+}
+
+.player-search-form > .button {
+  padding: 10px;
+}
+
+.other-inputs > .button {
+  padding: 4px;
+}
+
+.user-input-label {
+  color: white;
+  font-weight: 600;
+}
+
+.user-input {
+  padding: 3px;
+  border-radius: 3px;
+  border: none;
+  margin: 5px;
 }
