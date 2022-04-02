@@ -11,8 +11,12 @@ const DataFetcher = {
         return playerData;
     },
 
-    getSeasonAverages: async function(season, playerId) {
-        const response = await fetch(`/season-average?season=${encodeURIComponent(season)}&playerId=${encodeURIComponent(playerId)}`);
+    getSeasonAverages: async function(season, players) {
+        let playerIds = [];
+        players.forEach((player) => {
+            playerIds.push(player.id);
+        })
+        const response = await fetch(`/season-average?season=${encodeURIComponent(season)}&playerId=${encodeURIComponent(JSON.stringify(playerIds))}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

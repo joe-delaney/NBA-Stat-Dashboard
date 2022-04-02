@@ -37,12 +37,17 @@ app.get('/search', (request, response) => {
 });
 
 app.get('/season-average', (request, response) => {
-    console.log("Made it in here")
     const urlStart = 'https://balldontlie.io/api/v1/season_averages?';
     const season = request.query.season; // from query string
-    const playerId = request.query.playerId; //from query string
-    const url = `${urlStart}season=${season}&player_ids[]=${playerId}`;
+    const playerIds = JSON.parse(request.query.playerId); //from query string
 
+    //Create playerIdString for url from playerIds passed in from front end
+    let playerIdString = "";
+    playerIds.forEach((id) => {
+        playerIdString += `&player_ids[]=${id}`;
+    })
+
+    const url = `${urlStart}season=${season}${playerIdString}`;
     console.log(`Fetching: ${url}`);
 
     fetch(url) // AJAX request to API
