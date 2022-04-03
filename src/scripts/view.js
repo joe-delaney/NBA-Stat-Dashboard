@@ -31,7 +31,6 @@ export default class View {
         DataFetcher.getPlayer(query)
         .then(result => {
             let playerData = result.data;
-
             if(playerData.length === 0) {
                 alert("There are no players that match that name");
             } else if(playerData.length > 1) {
@@ -51,10 +50,9 @@ export default class View {
     }
 
     //Gets the season averages for all seasons selected by user
-    iterateSeasons(start, end) {
+    iterateSeasons(start, end, numSeasons) {
         for(let i = start; i <= end; i++) {
-            this.getSeasonAverages(i);
-            this.seasons.push(parseInt(i));
+            this.getSeasonAverages(i, numSeasons);
         }
     }
 
@@ -66,35 +64,43 @@ export default class View {
         this.reset();
         let start = this.startSeasonToggle.value;
         let end = this.endSeasonToggle.value;
-        this.iterateSeasons(start, end);
-        console.log(this.players);
-        console.log(this.seasons)
+        let numSeasons = parseInt(end) - parseInt(start) + 1        
+        this.iterateSeasons(start, end, numSeasons);
     }
 
     //Gets the season data for one season
     //If we have hit the end season input, do what we need with data
-    getSeasonAverages(season) {
+    getSeasonAverages(season, numSeasons) {
         DataFetcher.getSeasonAverages(season, this.players)
             .then(data => {
                 let averages = data.data;
+                //Sort by player id to match API pull
                 this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
-                this.players.forEach((player, idx) => {
-                    player.updateAverages(averages[idx]);
+
+                //Loop handles updating player data for correct player
+                //Need to keep track of averages idx because of the way
+                //API returns data.
+                let averages_idx = 0;
+                this.players.forEach((player) => {
+                    if(averages_idx < averages.length && averages[averages_idx].player_id === player.id) {
+                        player.updateAverages(parseInt(season), averages[averages_idx]);
+                        averages_idx++;
+                    } else {
+                        player.updateAverages(parseInt(season));
+                    }
                 })
             })
             .then(res => {
-                if(parseInt(season) === parseInt(this.endSeasonToggle.value)) {
+                //It doesn't matter what order the stats come in, just need
+                //to make sure that we have them all before doing anything else
+                this.seasons.push(parseInt(season));
+                if(this.seasons.length === numSeasons) {
                     this.players.forEach((player) => {
                         console.log(`${player.fname}: ${this.getMetric(this.metricToggle.value, player)}`)
-                    });
+                    })
                 }
+                this.seasons = this.seasons.sort();
             });
-    }
-
-    //Prints out the currently selected players to the console
-    //Mainly used for debugging, can delete once functional
-    printPlayers() {
-        console.log(this.players);
     }
 
     //Resets player average arrays and seasons array in preparation for new data
