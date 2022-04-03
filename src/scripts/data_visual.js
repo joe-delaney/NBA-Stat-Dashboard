@@ -28,7 +28,9 @@ export default class DataVisual {
             .range([0, width]);
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).tickFormat(d3.format('0f')));
+            .call(d3.axisBottom(x)
+                    .tickFormat(d3.format('d'))
+                    .ticks(seasons.length));
 
         // Add Y axis
         let y = d3.scaleLinear()
@@ -44,6 +46,7 @@ export default class DataVisual {
             .attr("stroke", "steelblue")
             .attr("stroke-width", 1.5)
             .attr("d", d3.line()
+                .defined(function (d) { return d.y !== 0; })
                 .x(function (d) { return x(d.x) })
                 .y(function (d) { return y(d.y) })
             )

@@ -40,6 +40,7 @@ export default class View {
                 alert("Please Narrow Your Search");
             } else {
                 this.addPlayer(new Player(playerData[0]));
+                this.searchInput.value = '';
             }
         });
     }
@@ -49,7 +50,6 @@ export default class View {
         e.preventDefault();
         let input  = this.searchInput.value
         this.searchPlayer(input);
-        this.searchInput.value = '';
     }
 
     //Gets the season averages for all seasons selected by user
@@ -105,7 +105,6 @@ export default class View {
                     let currentMetric = this.getMetric(this.metricToggle.value, this.players[0]);
                     this.visual.reset();
                     this.visual.drawLineChart(this.seasons, currentMetric);
-
                 }
             });
     }
