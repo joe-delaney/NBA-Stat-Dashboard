@@ -1,5 +1,6 @@
 import DataFetcher from "./data_fetcher";
 import Player from "./player";
+import DataVisual from "./data_visual";
 
 export default class View {
     constructor() {
@@ -19,6 +20,8 @@ export default class View {
         this.metricToggle = document.querySelector("#metric")
         this.handleSubmit = this.handleSubmit.bind(this);
         this.otherInputsForm.addEventListener("submit", this.handleSubmit);
+
+        this.visual = new DataVisual();
     }
 
     //Adds player to current user selection
@@ -94,12 +97,16 @@ export default class View {
                 //It doesn't matter what order the stats come in, just need
                 //to make sure that we have them all before doing anything else
                 this.seasons.push(parseInt(season));
+                this.seasons = this.seasons.sort();
                 if(this.seasons.length === numSeasons) {
                     this.players.forEach((player) => {
                         console.log(`${player.fname}: ${this.getMetric(this.metricToggle.value, player)}`)
                     })
+                    let currentMetric = this.getMetric(this.metricToggle.value, this.players[0]);
+                    this.visual.reset();
+                    this.visual.drawLineChart(this.seasons, currentMetric);
+
                 }
-                this.seasons = this.seasons.sort();
             });
     }
 

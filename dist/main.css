@@ -138,3 +138,10 @@ body {
   border: none;
   margin: 5px;
 }
+
+.main-content {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+  padding-right: 20px;
+}

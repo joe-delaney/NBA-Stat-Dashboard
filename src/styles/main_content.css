@@ -1,0 +1,6 @@
+.main-content {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 20px;
+    padding-right: 20px;
+}
