@@ -38,9 +38,14 @@ export default class View {
                 alert("There are no players that match that name");
             } else if(playerData.length > 1) {
                 alert("Please Narrow Your Search");
-            } else {
-                this.addPlayer(new Player(playerData[0]));
-                this.searchInput.value = '';
+            }
+            else {
+                if(!this.alreadySelected(playerData)) {
+                    this.addPlayer(new Player(playerData[0]));
+                    this.searchInput.value = '';
+                } else {
+                    alert("Player is already selected");
+                }
             }
         });
     }
@@ -85,7 +90,7 @@ export default class View {
                 //API returns data.
                 let averages_idx = 0;
                 this.players.forEach((player) => {
-                    if(averages_idx < averages.length && averages[averages_idx].player_id === player.id) {
+                    if(averages && averages_idx < averages.length && averages[averages_idx].player_id === player.id) {
                         player.updateAverages(parseInt(season), averages[averages_idx]);
                         averages_idx++;
                     } else {
@@ -99,6 +104,8 @@ export default class View {
                 this.seasons.push(parseInt(season));
                 this.seasons = this.seasons.sort();
                 if(this.seasons.length === numSeasons) {
+                    console.log(this.seasons.length);
+                    console.log(numSeasons);
                     this.players.forEach((player) => {
                         console.log(`${player.fname}: ${this.getMetric(this.metricToggle.value, player)}`)
                     })
@@ -137,17 +144,27 @@ export default class View {
 
     getChartData(metric) {
         let chartData = [];
+        let metricLabel = this.metricToggle.value;
         this.players.forEach((player) => {
             let metricData = this.getMetric(metric, player);
             metricData.forEach((metric)=> {
                 chartData.push({
                     season: metric[0],
                     name: player.fname + " " + player.lname,
-                    metric: metric[1]
+                    metric: metric[1],
+                    metricLabel: metricLabel
                 })
             });
         });
         return chartData;
+    }
+
+    alreadySelected(playerData) {
+        let found = false;
+        this.players.forEach((player) => {
+            if(player.id === playerData[0].id) found = true;
+        });
+        return found;
     }
 
 }

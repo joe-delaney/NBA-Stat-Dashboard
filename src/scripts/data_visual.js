@@ -4,10 +4,12 @@ export default class DataVisual {
     }
 
     drawLineChart(seasons, chartData) {
+        let metricLabel = chartData[0].metricLabel;
+
         //set the dimensions of the graph
         const margin = { top: 10, right: 30, bottom: 30, left: 60 },
-            width = 1000 - margin.left - margin.right,
-            height = 580 - margin.top - margin.bottom;
+            width = 1200 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
 
         let svg = d3.select("#data-visualization")
             .append("svg")
@@ -29,20 +31,37 @@ export default class DataVisual {
 
         //Add the X axis
         svg.append("g")
+            .attr("class", "axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom()
                 .scale(x)
                 .tickFormat(d3.format('d'))
-                .ticks(seasons.length));
+                .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
+        
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", width / 2 + margin.left - margin.right)
+            .attr("y", height + 28)
+            .text("Season");
 
         //Scale the Y axis
         let y = d3.scaleLinear()
-            .domain(d3.extent(chartData, d => d.metric))
+            .domain([d3.min(chartData, d=>d.metric)*.80, d3.max(chartData, d => d.metric)])
             .range([height, 0]);
 
         // Add Y axis
         svg.append("g")
             .call(d3.axisLeft().scale(y));
+        
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "end")
+            .attr("y", -50)
+            .attr("x", -height / 3)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text(this.getYAxisLabel(metricLabel));
 
         console.log(players);
 
@@ -62,15 +81,53 @@ export default class DataVisual {
             .attr("stroke-width", 2)
             .attr("d", function (d) {
                 return d3.line()
+                    .curve(d3.curveCardinal)
                     .defined(d => d.metric !== 0)
                     .x(d => x(d.season))
                     .y(d => y(d.metric))
                     (d.values)
-            })       
+            })    
+            
+        var legend = d3.select("svg")
+            .selectAll('g.legend')
+            .data(players)
+            .enter()
+            .append("g")
+            .attr("class", "legend");
+
+        legend.append("circle")
+            .attr("cx", 1300)
+            .attr('cy', (d, i) => i * 30 + 350)
+            .attr("r", 6)
+            .style("fill", d => color(d.key))
+
+        legend.append("text")
+            .attr("x", 1320)
+            .attr("y", (d, i) => i * 30 + 355)
+            .text(d => d.key)
     }
 
     //Clear the current chart
     reset() {
         d3.selectAll("svg").remove();
+    }
+
+    getYAxisLabel(metricLabel) {
+        switch (metricLabel) {
+            case "ppg":
+                return "Points per Game";
+            case "apg":
+                return "Assists per Game";
+            case "rpg":
+                return "Rebounds per Game";
+            case "spg":
+                return "Steals per Game";
+            case "fg_pct":
+                return "Field Goal %";
+            case "fg3_pct":
+                return "3pt %";
+            default:
+                break;
+        }
     }
 }
