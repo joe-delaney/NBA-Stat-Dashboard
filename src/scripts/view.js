@@ -154,18 +154,30 @@ export default class View {
 
     getChartData(metric) {
         let chartData = [];
-        let metricLabel = this.metricToggle.value;
-        this.players.forEach((player) => {
-            let metricData = this.getMetric(metric, player);
-            metricData.forEach((metric)=> {
-                chartData.push({
-                    season: metric[0],
-                    name: player.fname + " " + player.lname,
-                    metric: metric[1],
-                    metricLabel: metricLabel
-                })
+        if(this.chartToggle.value === "line") {
+            let metricLabel = this.metricToggle.value;
+            this.players.forEach((player) => {
+                let metricData = this.getMetric(metric, player);
+                metricData.forEach((metric)=> {
+                    chartData.push({
+                        season: metric[0],
+                        name: `${player.fname} ${player.lname}`,
+                        metric: metric[1],
+                        metricLabel: metricLabel
+                    })
+                });
             });
-        });
+        } else if(this.chartToggle.value === "bar") {
+            let metricLabel = this.metricToggle.value;
+            this.seasons.forEach((season, idx) => {
+                let row = {"season": season};
+                this.players.forEach((player) => {
+                    row[`${player.fname} ${player.lname}`] = this.getMetric(metric, player)[idx][1];
+                })
+                row[`metricLabel`] = metricLabel;
+                chartData.push(row);
+            })
+        }
         return chartData;
     }
 

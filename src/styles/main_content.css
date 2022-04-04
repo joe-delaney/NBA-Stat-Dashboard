@@ -5,3 +5,8 @@
     padding-right: 20px;
 }
 
+#data-visualization {
+    display: flex;
+    justify-content: flex-end;
+}
+

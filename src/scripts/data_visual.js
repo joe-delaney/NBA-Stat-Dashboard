@@ -12,8 +12,10 @@ export default class DataVisual {
         switch (tag) {
             case "line":
                 this.drawLineChart(seasons, chartData);
+                break;
             case "bar":
                 this.drawBarChart(seasons, chartData);
+                break;
             default:
                 break;
         } 
@@ -65,7 +67,7 @@ export default class DataVisual {
             .attr("x", -this.height / 3)
             .attr("dy", ".75em")
             .attr("transform", "rotate(-90)")
-            .text(this.getYAxisLabel(this.metricLabel));
+            .text(this.getLabel(this.metricLabel));
 
         let color = this.getColorScheme(players);
 
@@ -94,7 +96,72 @@ export default class DataVisual {
     }
 
     drawBarChart(seasons, chartData) {
+        let svg = this.getSVG();
 
+        let players = chartData.map((row) => Object.keys(row));
+        players = players[0].slice(1, players.length-2);
+        
+        // Add X axis
+        let x = d3.scaleBand()
+            .domain(seasons)
+            .range([0, 1000])
+            .padding([0.2])
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(d3.axisBottom(x)
+                .tickFormat(d3.format('d')));
+
+        // Another scale for subgroup position
+        let xSubgroup = d3.scaleBand()
+            .domain(players)
+            .range([0, x.bandwidth()])
+            .padding([0.05])
+        
+        //Scale the Y axis
+        // let y = d3.scaleLinear()
+        //     .domain(d3.extent(chartData, d => d.metric))
+        //     .range([this.height, 30]);
+
+        // // Add Y axis
+        // svg.append("g")
+        //     .call(d3.axisLeft(y));
+
+        var y = d3.scaleLinear()
+            .domain([0, 40])
+            .range([this.height, 30]);
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+        
+        let color = d3.scaleOrdinal()
+            .domain(players)
+            .range(['#e41a1c', '#377eb8', '#4daf4a'])
+
+        // Show the bars
+        svg.append("g")
+            .selectAll("g")
+            // Enter in data = loop group per group
+            .data(chartData)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) { return "translate(" + x(d.season) + ",0)"; })
+            .selectAll("rect")
+            .data(function (d) { return players.map(function (key) { return { key: key, value: d[key] }; }); })
+            .enter().append("rect")
+            .attr("x", function (d) { return xSubgroup(d.key); })
+            .attr("y", function (d) { return y(d.value); })
+            .attr("width", xSubgroup.bandwidth())
+            .attr("height", function (d) { return 600 - y(d.value); })
+            .attr("fill", function (d) { return color(d.key); });
+
+
+        //add legend
+        this.addLegend(players, color);
+
+        //add title
+        this.addTitle(seasons);
     }
 
     //Clear the current chart
@@ -104,7 +171,8 @@ export default class DataVisual {
 
     //The following methods will be used by each chart
 
-    getYAxisLabel(metricLabel) {
+    //get label based on selected metric
+    getLabel(metricLabel) {
         switch (metricLabel) {
             case "ppg":
                 return "Points per Game";
@@ -171,7 +239,7 @@ export default class DataVisual {
             .attr("x", this.margin.left)
             .attr("y", 20)
             .attr("text-anchor", "left")
-            .text(`${this.getYAxisLabel(this.metricLabel)} from ${seasons[0]} to ${seasons[seasons.length - 1]}`)
+            .text(`${this.getLabel(this.metricLabel)} from ${seasons[0]} to ${seasons[seasons.length - 1]}`)
             .style("fill", "black")
             .style("font-size", 16)
             .style("font-family", "Arial Black")
