@@ -102,9 +102,9 @@ export default class View {
                     this.players.forEach((player) => {
                         console.log(`${player.fname}: ${this.getMetric(this.metricToggle.value, player)}`)
                     })
-                    let currentMetric = this.getMetric(this.metricToggle.value, this.players[0]);
+                    let chartData = this.getChartData(this.metricToggle.value);
                     this.visual.reset();
-                    this.visual.drawLineChart(this.seasons, currentMetric);
+                    this.visual.drawLineChart(this.seasons, chartData);
                 }
             });
     }
@@ -133,6 +133,21 @@ export default class View {
             default:
                 break;
         }
+    }
+
+    getChartData(metric) {
+        let chartData = [];
+        this.players.forEach((player) => {
+            let metricData = this.getMetric(metric, player);
+            metricData.forEach((metric)=> {
+                chartData.push({
+                    season: metric[0],
+                    name: player.fname + " " + player.lname,
+                    metric: metric[1]
+                })
+            });
+        });
+        return chartData;
     }
 
 }

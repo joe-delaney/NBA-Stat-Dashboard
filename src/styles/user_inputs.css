@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     height: 150px;
-    background-color: #45a29e;
+    background-color: #4056a1;
     width: 100%;
 }
 
@@ -31,7 +31,7 @@
 
 .button:hover {
     color: white;
-    background-color: #1f2833;
+    background-color: #d79922;
 }
 
 .player-search-form > .button {
@@ -44,7 +44,6 @@
 
 .user-input-label {
     color: white;
-    font-weight: 600;
 }
 
 .user-input {

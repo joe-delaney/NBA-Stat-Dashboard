@@ -3,7 +3,7 @@ export default class DataVisual {
 
     }
 
-    drawLineChart(seasons, metrics) {
+    drawLineChart(seasons, chartData) {
         //set the dimensions of the graph
         const margin = { top: 10, right: 30, bottom: 30, left: 60 },
             width = 1000 - margin.left - margin.right,
@@ -17,40 +17,56 @@ export default class DataVisual {
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
-        let data = []; 
-        for (let i = 0; i < seasons.length; i++) {
-            data.push({ x: seasons[i], y: metrics[i][1] });
-        }
+        //Group the data by player
+        let players = d3.nest()
+            .key(d => d.name)
+            .entries(chartData);
 
-        // Add X axis
+        // Scale the X axis
         let x = d3.scaleLinear()
-            .domain([d3.min(data, function (d) { return d.x; }), d3.max(data, function (d) { return d.x; })])
+            .domain(d3.extent(chartData, d => d.season))
             .range([0, width]);
+
+        //Add the X axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x)
-                    .tickFormat(d3.format('d'))
-                    .ticks(seasons.length));
+            .call(d3.axisBottom()
+                .scale(x)
+                .tickFormat(d3.format('d'))
+                .ticks(seasons.length));
+
+        //Scale the Y axis
+        let y = d3.scaleLinear()
+            .domain(d3.extent(chartData, d => d.metric))
+            .range([height, 0]);
 
         // Add Y axis
-        let y = d3.scaleLinear()
-            .domain([d3.min(data, function (d) { return d.y; })*.90, d3.max(data, function (d) { return d.y; })])
-            .range([height, 0]);
         svg.append("g")
-            .call(d3.axisLeft(y));
+            .call(d3.axisLeft().scale(y));
 
-        // Add the line
-        svg.append("path")
-            .datum(data)
+        console.log(players);
+
+        let res = players.map(function (d) { return d.key }) // list of players
+        let color = d3.scaleOrdinal()
+            .domain(res)
+            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
+
+
+        // Add the lines
+        svg.selectAll(".line")
+            .data(players)
+            .enter()
+            .append("path")
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 1.5)
-            .attr("d", d3.line()
-                .defined(function (d) { return d.y !== 0; })
-                .x(function (d) { return x(d.x) })
-                .y(function (d) { return y(d.y) })
-            )
-
+            .attr("stroke", d => color(d.key))
+            .attr("stroke-width", 2)
+            .attr("d", function (d) {
+                return d3.line()
+                    .defined(d => d.metric !== 0)
+                    .x(d => x(d.season))
+                    .y(d => y(d.metric))
+                    (d.values)
+            })       
     }
 
     //Clear the current chart
