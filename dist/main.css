@@ -87,22 +87,37 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 200px;
+  height: 180px;
   background-color: #4056a1;
   width: 100%;
 }
 
 .player-search-form {
-  padding: 30px;
+  padding: 5px;
 }
 
 .player-search-input {
-  width: 400px;
+  width: 700px;
   height: 33px;
   border-radius: 3px;
   border: none;
   padding-left: 10px;
   padding-right: 5px;
+}
+
+.selected-players {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 700px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.selected-players > .selected-player {
+  padding-right: 20px;
+  color: white;
 }
 
 .input-label {

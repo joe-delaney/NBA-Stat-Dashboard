@@ -13,6 +13,9 @@ export default class View {
         this.handleSearch = this.handleSearch.bind(this);
         this.searchForm.addEventListener("submit", this.handleSearch);
 
+        //Save HTML Elements related to selected players bar
+        this.selectedPlayersList = document.querySelector(".selected-players");
+
         //Save HTML Elements related to user inputs
         this.otherInputsForm = document.querySelector(".other-inputs");
         this.startSeasonToggle = document.querySelector("#start-season");
@@ -43,6 +46,9 @@ export default class View {
                 if(!this.alreadySelected(playerData)) {
                     this.addPlayer(new Player(playerData[0]));
                     this.searchInput.value = '';
+                    //Sort by player id to match API pull
+                    this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+                    this.updateSelectedPlayers();
                 } else {
                     alert("Player is already selected");
                 }
@@ -82,8 +88,8 @@ export default class View {
         DataFetcher.getSeasonAverages(season, this.players)
             .then(data => {
                 let averages = data.data;
-                //Sort by player id to match API pull
-                this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+                // //Sort by player id to match API pull
+                // this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
 
                 //Loop handles updating player data for correct player
                 //Need to keep track of averages idx because of the way
@@ -165,6 +171,21 @@ export default class View {
             if(player.id === playerData[0].id) found = true;
         });
         return found;
+    }
+
+    updateSelectedPlayers() {
+        //Reset the list
+        while (this.selectedPlayersList.firstChild) {
+            this.selectedPlayersList.removeChild(this.selectedPlayersList.firstChild);
+        }
+
+        //Append all players to the list
+        this.players.forEach( (player) => {
+            let li = document.createElement("li");
+            li.innerHTML = `${player.fname} ${player.lname}`;
+            li.classList.add("selected-player")
+            this.selectedPlayersList.append(li);
+        })
     }
 
 }

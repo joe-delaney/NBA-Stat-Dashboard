@@ -47,7 +47,7 @@ export default class DataVisual {
 
         //Scale the Y axis
         let y = d3.scaleLinear()
-            .domain([d3.min(chartData, d=>d.metric)*.80, d3.max(chartData, d => d.metric)])
+            .domain([d3.min(chartData, d=>d.metric)*.95, d3.max(chartData, d => d.metric)])
             .range([height, 0]);
 
         // Add Y axis
