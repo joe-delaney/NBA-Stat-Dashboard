@@ -8,7 +8,7 @@ export default class DataVisual {
 
         //set the dimensions of the graph
         const margin = { top: 10, right: 30, bottom: 30, left: 60 },
-            width = 1200 - margin.left - margin.right,
+            width = 1300 - margin.left - margin.right,
             height = 600 - margin.top - margin.bottom;
 
         let svg = d3.select("#data-visualization")
@@ -27,7 +27,7 @@ export default class DataVisual {
         // Scale the X axis
         let x = d3.scaleLinear()
             .domain(d3.extent(chartData, d => d.season))
-            .range([0, width]);
+            .range([0, 1000]);
 
         //Add the X axis
         svg.append("g")
@@ -41,7 +41,7 @@ export default class DataVisual {
         svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "end")
-            .attr("x", width / 2 + margin.left - margin.right)
+            .attr("x", 535)
             .attr("y", height + 28)
             .text("Season");
 
@@ -78,7 +78,7 @@ export default class DataVisual {
             .append("path")
             .attr("fill", "none")
             .attr("stroke", d => color(d.key))
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 3)
             .attr("d", function (d) {
                 return d3.line()
                     .curve(d3.curveCardinal)
@@ -96,13 +96,13 @@ export default class DataVisual {
             .attr("class", "legend");
 
         legend.append("circle")
-            .attr("cx", 1300)
+            .attr("cx", 1100)
             .attr('cy', (d, i) => i * 30 + 350)
             .attr("r", 6)
             .style("fill", d => color(d.key))
 
         legend.append("text")
-            .attr("x", 1320)
+            .attr("x", 1120)
             .attr("y", (d, i) => i * 30 + 355)
             .text(d => d.key)
     }
