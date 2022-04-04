@@ -87,7 +87,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 250px;
+  height: 200px;
   background-color: #4056a1;
   width: 100%;
 }
@@ -140,7 +140,7 @@ body {
 
 .main-content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   padding-top: 20px;
   padding-right: 20px;
 }

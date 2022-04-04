@@ -41,8 +41,8 @@ export default class DataVisual {
         svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "end")
-            .attr("x", 535)
-            .attr("y", height + 28)
+            .attr("x", 520)
+            .attr("y", height + 30)
             .text("Season");
 
         //Scale the Y axis
@@ -88,6 +88,7 @@ export default class DataVisual {
                     (d.values)
             })    
             
+        //add legend
         var legend = d3.select("svg")
             .selectAll('g.legend')
             .data(players)
@@ -105,6 +106,17 @@ export default class DataVisual {
             .attr("x", 1120)
             .attr("y", (d, i) => i * 30 + 355)
             .text(d => d.key)
+        
+        //add title
+        d3.select("svg")
+            .append("text")
+            .attr("x", margin.left + 20)
+            .attr("y", 20)
+            .attr("text-anchor", "left")
+            .text(`${this.getYAxisLabel(metricLabel)} from ${seasons[0]} to ${seasons[seasons.length-1]}`)
+            .style("fill", "black")
+            .style("font-size", 16)
+            .style("font-family", "Arial Black")
     }
 
     //Clear the current chart
