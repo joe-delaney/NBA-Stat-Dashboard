@@ -15,6 +15,8 @@ export default class View {
 
         //Save HTML Elements related to selected players bar
         this.selectedPlayersList = document.querySelector(".selected-players");
+        this.removePlayer = this.removePlayer.bind(this);
+        this.selectedPlayersList.addEventListener("click", this.removePlayer)
 
         //Save HTML Elements related to user inputs
         this.otherInputsForm = document.querySelector(".other-inputs");
@@ -46,6 +48,7 @@ export default class View {
                 if(!this.alreadySelected(playerData)) {
                     this.addPlayer(new Player(playerData[0]));
                     this.searchInput.value = '';
+
                     //Sort by player id to match API pull
                     this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
                     this.updateSelectedPlayers();
@@ -173,6 +176,14 @@ export default class View {
         return found;
     }
 
+    removePlayer(e) {
+        if (e.target.matches('button')) {
+            let idx = e.target.id
+            this.players.splice(idx, 1);
+            this.updateSelectedPlayers();
+        }
+    }
+
     updateSelectedPlayers() {
         //Reset the list
         while (this.selectedPlayersList.firstChild) {
@@ -180,10 +191,21 @@ export default class View {
         }
 
         //Append all players to the list
-        this.players.forEach( (player) => {
+        this.players.forEach( (player, idx) => {
             let li = document.createElement("li");
-            li.innerHTML = `${player.fname} ${player.lname}`;
             li.classList.add("selected-player")
+
+            let label = document.createElement("label");
+            label.classList.add("selected-player-label");
+            label.innerHTML = `${player.fname} ${player.lname}`;
+
+            let button = document.createElement("button");
+            button.classList.add("remove-player-button");
+            button.id = `${idx}`
+            button.innerHTML = "x";
+
+            li.append(label);
+            li.append(button);
             this.selectedPlayersList.append(li);
         })
     }
