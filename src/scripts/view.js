@@ -22,7 +22,8 @@ export default class View {
         this.otherInputsForm = document.querySelector(".other-inputs");
         this.startSeasonToggle = document.querySelector("#start-season");
         this.endSeasonToggle = document.querySelector("#end-season");
-        this.metricToggle = document.querySelector("#metric")
+        this.metricToggle = document.querySelector("#metric");
+        this.chartToggle = document.querySelector("#chart");
         this.handleSubmit = this.handleSubmit.bind(this);
         this.otherInputsForm.addEventListener("submit", this.handleSubmit);
 
@@ -120,7 +121,7 @@ export default class View {
                     })
                     let chartData = this.getChartData(this.metricToggle.value);
                     this.visual.reset();
-                    this.visual.drawLineChart(this.seasons, chartData);
+                    this.visual.drawChart(this.chartToggle.value, this.seasons, chartData);
                 }
             });
     }

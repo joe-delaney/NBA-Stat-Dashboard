@@ -1,23 +1,31 @@
 export default class DataVisual {
     constructor() {
+        //set the dimensions of the graph
+         this.margin = { top: 10, right: 30, bottom: 30, left: 60 },
+            this.width = 1300 - this.margin.left - this.margin.right,
+            this.height = 600 - this.margin.top - this.margin.bottom;
+    }
+
+    drawChart(tag, seasons, chartData) {
+        switch (tag) {
+            case "line":
+                this.drawLineChart(seasons, chartData);
+            default:
+                break;
+        } 
 
     }
 
     drawLineChart(seasons, chartData) {
         let metricLabel = chartData[0].metricLabel;
 
-        //set the dimensions of the graph
-        const margin = { top: 10, right: 30, bottom: 30, left: 60 },
-            width = 1300 - margin.left - margin.right,
-            height = 600 - margin.top - margin.bottom;
-
-        let svg = d3.select("#data-visualization")
+        this.svg = d3.select("#data-visualization")
             .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
             .append("g")
             .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+                "translate(" + this.margin.left + "," + this.margin.top + ")");
 
         //Group the data by player
         let players = d3.nest()
@@ -30,35 +38,35 @@ export default class DataVisual {
             .range([0, 1000]);
 
         //Add the X axis
-        svg.append("g")
+        this.svg.append("g")
             .attr("class", "axis")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom()
                 .scale(x)
                 .tickFormat(d3.format('d'))
                 .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
         
-        svg.append("text")
+        this.svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "end")
             .attr("x", 520)
-            .attr("y", height + 30)
+            .attr("y", this.height + 30)
             .text("Season");
 
         //Scale the Y axis
         let y = d3.scaleLinear()
             .domain([d3.min(chartData, d=>d.metric)*.95, d3.max(chartData, d => d.metric)])
-            .range([height, 0]);
+            .range([this.height, 30]);
 
         // Add Y axis
-        svg.append("g")
+        this.svg.append("g")
             .call(d3.axisLeft().scale(y));
         
-        svg.append("text")
+        this.svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "end")
             .attr("y", -50)
-            .attr("x", -height / 3)
+            .attr("x", -this.height / 3)
             .attr("dy", ".75em")
             .attr("transform", "rotate(-90)")
             .text(this.getYAxisLabel(metricLabel));
@@ -72,7 +80,7 @@ export default class DataVisual {
 
 
         // Add the lines
-        svg.selectAll(".line")
+        this.svg.selectAll(".line")
             .data(players)
             .enter()
             .append("path")
@@ -110,7 +118,7 @@ export default class DataVisual {
         //add title
         d3.select("svg")
             .append("text")
-            .attr("x", margin.left + 20)
+            .attr("x", this.margin.left)
             .attr("y", 20)
             .attr("text-anchor", "left")
             .text(`${this.getYAxisLabel(metricLabel)} from ${seasons[0]} to ${seasons[seasons.length-1]}`)
