@@ -69,10 +69,8 @@ export default class DataVisual {
             .attr("transform", "rotate(-90)")
             .text(this.getLabel(this.metricLabel));
 
-        let res = players.map(function (d) { return d.key }) // list of players
-        let color = d3.scaleOrdinal()
-            .domain(res)
-            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
+        let playerNames = players.map(function (d) { return d.key }) // list of players
+        let color = this.getColor(playerNames);
 
         // Add the lines
         svg.selectAll(".line")
@@ -137,9 +135,7 @@ export default class DataVisual {
         svg.append("g")
             .call(d3.axisLeft(y));
         
-        let color = d3.scaleOrdinal()
-            .domain(players)
-            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
+        let color = this.getColor(players);
 
         // Show the bars
         svg.append("g")
@@ -203,6 +199,12 @@ export default class DataVisual {
             .append("g")
             .attr("transform",
                 "translate(" + this.margin.left + "," + this.margin.top + ")");
+    }
+
+    getColor(playerNames) {
+        return d3.scaleOrdinal()
+            .domain(playerNames)
+            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']);
     }
 
     //add legend to the current chart
