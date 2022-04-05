@@ -63,6 +63,7 @@ export default class View {
                         alert("Player is already selected");
                     }
                 } else {
+                    playerData = playerData.sort((a,b) => a.last_name > b.last_name ? 1: -1);
                     playerData.forEach((player) => {
                         let li = document.createElement("li");
                         li.innerHTML = `${player.first_name} ${player.last_name}, ${player.team.abbreviation}`;
