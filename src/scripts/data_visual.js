@@ -69,7 +69,10 @@ export default class DataVisual {
             .attr("transform", "rotate(-90)")
             .text(this.getLabel(this.metricLabel));
 
-        let color = this.getColorScheme(players);
+        let res = players.map(function (d) { return d.key }) // list of players
+        let color = d3.scaleOrdinal()
+            .domain(res)
+            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
 
         // Add the lines
         svg.selectAll(".line")
@@ -98,8 +101,17 @@ export default class DataVisual {
     drawBarChart(seasons, chartData) {
         let svg = this.getSVG();
 
+        let values = [];
+        chartData.forEach((row) => {
+            Object.keys(row).forEach((key) => {
+                if(key !== "season" && key !== 'metricLabel') {
+                    values.push(row[key]);
+                }
+            })
+        })
+
         let players = chartData.map((row) => Object.keys(row));
-        players = players[0].slice(1, players.length-2);
+        players = players[0].slice(1, players[0].length-1);
         
         // Add X axis
         let x = d3.scaleBand()
@@ -117,19 +129,9 @@ export default class DataVisual {
         let xSubgroup = d3.scaleBand()
             .domain(players)
             .range([0, x.bandwidth()])
-            .padding([0.05])
-        
-        //Scale the Y axis
-        // let y = d3.scaleLinear()
-        //     .domain(d3.extent(chartData, d => d.metric))
-        //     .range([this.height, 30]);
-
-        // // Add Y axis
-        // svg.append("g")
-        //     .call(d3.axisLeft(y));
 
         var y = d3.scaleLinear()
-            .domain([0, 40])
+            .domain([d3.min(values, d => d) * .50, d3.max(values, d => d)*1.25])
             .range([this.height, 30]);
 
         svg.append("g")
@@ -137,7 +139,7 @@ export default class DataVisual {
         
         let color = d3.scaleOrdinal()
             .domain(players)
-            .range(['#e41a1c', '#377eb8', '#4daf4a'])
+            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
 
         // Show the bars
         svg.append("g")
@@ -153,12 +155,13 @@ export default class DataVisual {
             .attr("x", function (d) { return xSubgroup(d.key); })
             .attr("y", function (d) { return y(d.value); })
             .attr("width", xSubgroup.bandwidth())
-            .attr("height", function (d) { return 600 - y(d.value); })
+            .attr("height", function (d) {return this.height - y(d.value); }.bind(this))
             .attr("fill", function (d) { return color(d.key); });
 
 
         //add legend
-        this.addLegend(players, color);
+        let legendData = players.map((player) => { return {key: player, value: player}});
+        this.addLegend(legendData, color);
 
         //add title
         this.addTitle(seasons);
@@ -200,15 +203,6 @@ export default class DataVisual {
             .append("g")
             .attr("transform",
                 "translate(" + this.margin.left + "," + this.margin.top + ")");
-    }
-
-    //map colors to players return the color scheme to be used in the current chart
-    getColorScheme(players) {
-        let res = players.map(function (d) { return d.key }) // list of players
-        let color = d3.scaleOrdinal()
-            .domain(res)
-            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
-        return color;
     }
 
     //add legend to the current chart

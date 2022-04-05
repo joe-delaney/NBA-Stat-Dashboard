@@ -39,6 +39,7 @@
     align-items: center;
     border: 1px solid white;
     height: 33px;
+    border-radius: 3px;
 }
 
 .remove-player-button {
