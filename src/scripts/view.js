@@ -12,6 +12,11 @@ export default class View {
         this.searchInput = document.querySelector(".player-search-input")
         this.handleSearch = this.handleSearch.bind(this);
         this.searchForm.addEventListener("submit", this.handleSearch);
+        this.searchResults = document.querySelector(".search-results");
+        this.handleSearchResultClicked = this.handleSearchResultClicked.bind(this);
+        this.searchResults.addEventListener("click", this.handleSearchResultClicked);
+        this.clearSearchResults = this.clearSearchResults.bind(this);
+        this.searchInput.addEventListener("input", this.clearSearchResults);
 
         //Save HTML Elements related to selected players bar
         this.selectedPlayersList = document.querySelector(".selected-players");
@@ -41,11 +46,11 @@ export default class View {
         .then(result => {
             let playerData = result.data;
             if(playerData.length === 0) {
-                alert("There are no players that match that name");
-            } else if(playerData.length > 1) {
-                alert("Please Narrow Your Search");
-            }
-            else {
+                let li = document.createElement("li");
+                li.innerHTML = `No players found`;
+                li.classList.add("no-results");
+                this.searchResults.append(li);
+            } else if(playerData.length === 1) {
                 if(!this.alreadySelected(playerData)) {
                     this.addPlayer(new Player(playerData[0]));
                     this.searchInput.value = '';
@@ -56,6 +61,16 @@ export default class View {
                 } else {
                     alert("Player is already selected");
                 }
+            } else {
+                playerData.forEach((player) => {
+                    let li = document.createElement("li");
+                    li.innerHTML = `${player.first_name} ${player.last_name}, ${player.team.abbreviation}`;
+                    li.setAttribute("data-first-name", player.first_name);
+                    li.setAttribute("data-last-name", player.last_name);
+                    li.setAttribute("data-id", player.id);
+                    li.classList.add("search-result");
+                    this.searchResults.append(li);
+                })
             }
         });
     }
@@ -65,6 +80,31 @@ export default class View {
         e.preventDefault();
         let input  = this.searchInput.value
         this.searchPlayer(input);
+    }
+
+    //Event handler for selecting search results
+    handleSearchResultClicked(e) {
+        if (e.target.matches('li')) {
+            let options = {
+                first_name: e.target.getAttribute("data-first-name"),
+                last_name: e.target.getAttribute("data-last-name"),
+                id: parseInt(e.target.getAttribute("data-id"))
+            }
+
+            this.addPlayer(new Player(options));
+            this.searchInput.value = '';
+
+            //Sort by player id to match API pull
+            this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+            this.updateSelectedPlayers();
+        }
+    }
+
+    clearSearchResults(e) {
+        //Reset the search results list
+        while (this.searchResults.firstChild) {
+            this.searchResults.removeChild(this.searchResults.firstChild);
+        }
     }
 
     //Gets the season averages for all seasons selected by user
@@ -79,15 +119,20 @@ export default class View {
     //Fetch new season data
     handleSubmit(e) {
         e.preventDefault();
-        this.reset();
-        let start = this.startSeasonToggle.value;
-        let end = this.endSeasonToggle.value;
-        let numSeasons = parseInt(end) - parseInt(start) + 1   
-        
-        if(parseInt(end) >= parseInt(start)) {
-            this.iterateSeasons(start, end, numSeasons);
+
+        if(this.players.length  === 0 ) {
+            alert("Please select a player first");
         } else {
-            alert("End Season can't be before Start Season");
+            this.reset();
+            let start = this.startSeasonToggle.value;
+            let end = this.endSeasonToggle.value;
+            let numSeasons = parseInt(end) - parseInt(start) + 1   
+            
+            if(parseInt(end) >= parseInt(start)) {
+                this.iterateSeasons(start, end, numSeasons);
+            } else {
+                alert("End Season can't be before Start Season");
+            }
         }
     }
 
@@ -204,9 +249,14 @@ export default class View {
     }
 
     updateSelectedPlayers() {
-        //Reset the list
+        //Reset the selected players list
         while (this.selectedPlayersList.firstChild) {
             this.selectedPlayersList.removeChild(this.selectedPlayersList.firstChild);
+        }
+
+        //Reset the search results list
+        while (this.searchResults.firstChild) {
+            this.searchResults.removeChild(this.searchResults.firstChild);
         }
 
         //Append all players to the list
