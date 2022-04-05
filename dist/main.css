@@ -116,6 +116,10 @@ body {
   width: 715px;
   margin-left: 5px;
   border-radius: 2px;
+  position: absolute;
+  margin-top: 35px;
+  max-height: 160px;
+  overflow: auto;
 }
 
 .search-result {
@@ -124,6 +128,7 @@ body {
 
 .no-results {
   color: lightgray;
+  padding: 5px;
 }
 
 .search-result:hover {

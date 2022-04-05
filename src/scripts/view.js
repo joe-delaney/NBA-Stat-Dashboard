@@ -42,37 +42,39 @@ export default class View {
 
     //Searches for a player and adds him if found
     searchPlayer(query) {
-        DataFetcher.getPlayer(query)
-        .then(result => {
-            let playerData = result.data;
-            if(playerData.length === 0) {
-                let li = document.createElement("li");
-                li.innerHTML = `No players found`;
-                li.classList.add("no-results");
-                this.searchResults.append(li);
-            } else if(playerData.length === 1) {
-                if(!this.alreadySelected(playerData)) {
-                    this.addPlayer(new Player(playerData[0]));
-                    this.searchInput.value = '';
-
-                    //Sort by player id to match API pull
-                    this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
-                    this.updateSelectedPlayers();
-                } else {
-                    alert("Player is already selected");
-                }
-            } else {
-                playerData.forEach((player) => {
+        if(query.length > 0) {
+            DataFetcher.getPlayer(query)
+            .then(result => {
+                let playerData = result.data;
+                if(playerData.length === 0) {
                     let li = document.createElement("li");
-                    li.innerHTML = `${player.first_name} ${player.last_name}, ${player.team.abbreviation}`;
-                    li.setAttribute("data-first-name", player.first_name);
-                    li.setAttribute("data-last-name", player.last_name);
-                    li.setAttribute("data-id", player.id);
-                    li.classList.add("search-result");
+                    li.innerHTML = `No players found`;
+                    li.classList.add("no-results");
                     this.searchResults.append(li);
-                })
-            }
-        });
+                } else if(playerData.length === 1) {
+                    if(!this.alreadySelected(playerData[0])) {
+                        this.addPlayer(new Player(playerData[0]));
+                        this.searchInput.value = '';
+
+                        //Sort by player id to match API pull
+                        this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+                        this.updateSelectedPlayers();
+                    } else {
+                        alert("Player is already selected");
+                    }
+                } else {
+                    playerData.forEach((player) => {
+                        let li = document.createElement("li");
+                        li.innerHTML = `${player.first_name} ${player.last_name}, ${player.team.abbreviation}`;
+                        li.setAttribute("data-first-name", player.first_name);
+                        li.setAttribute("data-last-name", player.last_name);
+                        li.setAttribute("data-id", player.id);
+                        li.classList.add("search-result");
+                        this.searchResults.append(li);
+                    })
+                }
+            });
+        }
     }
 
     //Event handler for "add player / search" button
@@ -91,12 +93,16 @@ export default class View {
                 id: parseInt(e.target.getAttribute("data-id"))
             }
 
-            this.addPlayer(new Player(options));
-            this.searchInput.value = '';
+            if(!this.alreadySelected(options)) {
+                this.addPlayer(new Player(options));
+                this.searchInput.value = '';
 
-            //Sort by player id to match API pull
-            this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
-            this.updateSelectedPlayers();
+                //Sort by player id to match API pull
+                this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+                this.updateSelectedPlayers();
+            } else {
+                alert("Player is already selected");
+            }
         }
     }
 
@@ -235,7 +241,7 @@ export default class View {
     alreadySelected(playerData) {
         let found = false;
         this.players.forEach((player) => {
-            if(player.id === playerData[0].id) found = true;
+            if(player.id === playerData.id) found = true;
         });
         return found;
     }
