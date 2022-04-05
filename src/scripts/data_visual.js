@@ -58,11 +58,10 @@ export default class DataVisual {
             .enter()
             .append("path")
             .attr("class", "line")
-            .attr("id", (d, i) => { return i })
+            .attr("id", (d, i) => { return "line"+i })
             .attr("fill", "none")
             .attr("stroke", d => color(d.key))
             .attr("stroke-width", 3)
-            .style("opacity", "0")
             .attr("d", function (d) {
                 return d3.line()
                     .curve(d3.curveCardinal)
@@ -71,22 +70,22 @@ export default class DataVisual {
                     .y(d => y(d.metric))
                     (d.values)
             })    
-        
-        d3.selectAll(".line").each((d, i) => {
-            debugger;
-            let currentLine = `#line${i}`
-            let totalLength = d3.select(".line").node().getTotalLength();
 
-            d3.selectAll(currentLine)
-            .attr("stroke-dasharray", totalLength + " " + totalLength)
-            .attr("stroke-dashoffset", totalLength)
-            .transition()
-            .duration(5000)
-            .delay(100 * i)
-            .attr("stroke-dashoffset", 0)
-            .style("opacity", "1");
+        svg.selectAll(".line").style("opacity", "1");
+
+        svg.selectAll(".line").each(function(d,i) {
+            let totalLength = svg.select("#line" + i).node().getTotalLength();
+            svg.selectAll("#line"+i)
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(3000)
+                .delay(100 * i)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .style("stroke-width", 3);
         })
-            
+        
         this.addLegend(players, color);
         this.addTitle(seasons);
     }
