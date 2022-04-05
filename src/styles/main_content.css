@@ -3,10 +3,25 @@
     padding-top: 20px;
     padding-right: 20px;
     margin-left: 300px;
+    flex-direction: column;
+    align-items: center;
 }
 
-#data-visualization {
-    display: flex;
-    justify-content: center;
+.hide {
+    display: none;
+    cursor: not-allowed;
 }
+
+.download {
+    border: 1px solid black;
+    border-radius: 3px;
+    width: 120px;
+    padding: 10px;
+    margin-right: 200px;
+}
+
+.download-container {
+    display: flex;
+}
+
 

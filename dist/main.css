@@ -199,11 +199,25 @@ body {
   padding-top: 20px;
   padding-right: 20px;
   margin-left: 300px;
+  flex-direction: column;
+  align-items: center;
 }
 
-#data-visualization {
+.hide {
+  display: none;
+  cursor: not-allowed;
+}
+
+.download {
+  border: 1px solid black;
+  border-radius: 3px;
+  width: 120px;
+  padding: 10px;
+  margin-right: 200px;
+}
+
+.download-container {
   display: flex;
-  justify-content: center;
 }
 
 .axis-label {
@@ -211,4 +225,26 @@ body {
   font-weight: bold;
   font-size: 14px;
   font-family: "Arial Black", Gadget, sans-serif;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.svg {
+  background-color: white;
+}
+
+#chart-tool-tip {
+  position: absolute;
+  display: none;
+  width: auto;
+  height: auto;
+  background: #515A5A;
+  border: 0 none;
+  border-radius: 4px;
+  color: white;
+  font: 12px sans-serif;
+  padding: 5px;
+  text-align: center;
 }

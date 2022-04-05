@@ -19,7 +19,6 @@ export default class DataVisual {
             default:
                 break;
         } 
-
     }
 
     drawLineChart(seasons, chartData) {
@@ -41,7 +40,7 @@ export default class DataVisual {
                 .scale(x)
                 .tickFormat(d3.format('d'))
                 .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
-        this.addXAxisLabel(svg);
+        // this.addXAxisLabel(svg);
 
         // Y axis
         let y = d3.scaleLinear()
@@ -98,11 +97,12 @@ export default class DataVisual {
             .range([0, 1000])
             .padding([0.2])
         svg.append("g")
-            .attr("class", "axis")
+            .attr("class", "x axis")
             .attr("transform", "translate(0," + this.height + ")")
+            .style("font-weight", 600)
             .call(d3.axisBottom(x)
-                .tickFormat(d3.format('d')));
-        this.addXAxisLabel(svg);
+                .tickFormat(d3.format('d'))
+                .tickSize(0));
 
         // X Axis - subgroup for players
         let xSubgroup = d3.scaleBand()
@@ -119,22 +119,59 @@ export default class DataVisual {
 
         let color = this.getColor(players);
 
+        let toolTip = d3.select("#chart-tool-tip");
+
         // Show the bars
-        svg.append("g")
+        let bars = svg.append("g")
             .selectAll("g")
-            // Enter in data = loop group per group
             .data(chartData)
             .enter()
             .append("g")
             .attr("transform", function (d) { return "translate(" + x(d.season) + ",0)"; })
-            .selectAll("rect")
-            .data(function (d) { return players.map(function (key) { return { key: key, value: d[key] }; }); })
+        
+        bars.selectAll("rect")
+            .data(function (d) { return players.map(function (key) { return { key: key, value: d[key]}; }); })
             .enter().append("rect")
             .attr("x", function (d) { return xSubgroup(d.key); })
-            .attr("y", function (d) { return y(d.value); })
             .attr("width", xSubgroup.bandwidth())
-            .attr("height", function (d) {return this.height - y(d.value); }.bind(this))
-            .attr("fill", function (d) { return color(d.key); });
+            .attr("y", function (d) { return y(0); })
+            .attr("height", function (d) { return this.height - y(0); }.bind(this))
+            .attr("fill", function (d) { return color(d.key); })
+            .attr("value", function (d) {return d.value})
+            .attr("idx", function(d) {return d.idx})
+            .on("mouseover", function (d) {  
+                toolTip.style("left", d3.event.pageX + 10 + "px")
+                toolTip.style("top", d3.event.pageY - 35 + "px")
+                toolTip.style("display", "inline-block")
+                toolTip.style("opacity", "0.9");
+
+                //Get the data associated with bar hovered over
+                let barData = this.__data__
+
+                toolTip.html(barData.key + "<br>" + barData.value);
+                
+                d3.select(this)
+                    .style("fill", "#FFFF99")
+                    .style("stroke", "Black")
+                    .style("stroke-width", "1.8px")
+                    .style("stroke-opacity", "1");
+                
+            })
+            .on("mouseout", function (d) {
+                d3.select(this)
+                    .style("fill", color(d.key))
+                    .transition().duration(250)
+                    .style("stroke-opacity", "0");
+
+                toolTip.style("display", "none")
+            });
+        
+        bars.selectAll("rect")
+            .transition()
+            .delay(function (d) { return Math.random() * 1000; })
+            .duration(1000)
+            .attr("y", function (d) { return y(d.value); })
+            .attr("height", function (d) { return this.height - y(d.value); }.bind(this));
 
         let legendData = players.map((player) => { return {key: player, value: player}});
         this.addLegend(legendData, color);
@@ -172,6 +209,7 @@ export default class DataVisual {
     getSVG() {
         return d3.select("#data-visualization")
             .append("svg")
+            .attr("id", "svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
             .append("g")
@@ -208,12 +246,13 @@ export default class DataVisual {
 
     //add legend to the current chart
     addLegend(players, color) {
-        var legend = d3.select("svg")
+        let legend = d3.select("svg")
             .selectAll('g.legend')
             .data(players)
             .enter()
             .append("g")
-            .attr("class", "legend");
+            .attr("class", "legend")
+            .style("opacity", "0");
 
         legend.append("circle")
             .attr("cx", 1100)
@@ -225,6 +264,8 @@ export default class DataVisual {
             .attr("x", 1120)
             .attr("y", (d, i) => i * 30 + 355)
             .text(d => d.key);
+
+        legend.transition().duration(500).delay(function (d, i) { return 1300 + 100 * i; }).style("opacity", "1");
     }
 
     //add title to the current chart

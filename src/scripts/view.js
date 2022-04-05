@@ -1,6 +1,7 @@
 import DataFetcher from "./data_fetcher";
 import Player from "./player";
 import DataVisual from "./data_visual";
+import SaveSVGAsPNG from "./saveSVGAsPNG";
 
 export default class View {
     constructor() {
@@ -31,6 +32,12 @@ export default class View {
         this.chartToggle = document.querySelector("#chart");
         this.handleSubmit = this.handleSubmit.bind(this);
         this.otherInputsForm.addEventListener("submit", this.handleSubmit);
+
+        //Save HTML Element related to chart
+        this.downloadButton = document.querySelector('.download');
+        this.downloadButtonClicked = this.downloadButtonClicked.bind(this);
+        this.downloadButton.addEventListener("click", this.downloadButtonClicked);
+        this.downloadButton.classList.toggle("hide");
 
         this.visual = new DataVisual();
     }
@@ -130,6 +137,9 @@ export default class View {
         if(this.players.length  === 0 ) {
             alert("Please select a player first");
         } else {
+            if(!this.downloadButton.classList.contains("hide")) {
+                this.downloadButton.classList.toggle("hide");
+            }
             this.reset();
             let start = this.startSeasonToggle.value;
             let end = this.endSeasonToggle.value;
@@ -179,6 +189,7 @@ export default class View {
                     let chartData = this.getChartData(this.metricToggle.value);
                     this.visual.reset();
                     this.visual.drawChart(this.chartToggle.value, this.seasons, chartData);
+                    setTimeout(() => this.downloadButton.classList.toggle("hide"), 1500);
                 }
             });
     }
@@ -286,4 +297,7 @@ export default class View {
         })
     }
 
+    downloadButtonClicked(e) {
+        saveSvgAsPng(document.getElementById("svg"), "diagram.png", {backgroundColor: "white"});
+    }
 }

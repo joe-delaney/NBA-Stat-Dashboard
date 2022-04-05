@@ -5,4 +5,26 @@
          font-family:"Arial Black", Gadget, sans-serif;
 } 
 
+.x.axis path {
+  display: none;
+}
+
+.svg {
+    background-color: white;
+}
+
+#chart-tool-tip {
+      position: absolute;
+      display: none;
+      width: auto;
+      height: auto;
+      background: #515A5A;
+      border: 0 none;
+      border-radius: 4px;
+      color: white;
+      font: 12px sans-serif;
+      padding: 5px;
+      text-align: center;
+}
+
     

@@ -9,6 +9,7 @@
     <script src="./main.js"></script>
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+    <link rel="icon" href="./assets/nba-logo.ico">
     <title>NBA Stats Dashboard</title>
 </head>
 
@@ -58,15 +59,19 @@
                 <select class="user-input" id="chart">
                     <option value="line" selected>Line Chart</option>
                     <option value="bar">Bar Chart</option>
-                    <option value="scatter">Scatterplot</option>
                 </select>
             </label>
             <input class="button" type="submit" value="Visualize Data">
         </form>
     </nav>
     <section class="main-content">
+        <div id="chart-tool-tip"></div>
         <div id="data-visualization"></div>
+        <div class="download-container">
+            <button class="download button">Download Chart</button>
+        </div>
     </section>
+    
 </body>
 
 </html>
