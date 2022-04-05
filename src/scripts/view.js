@@ -181,11 +181,6 @@ export default class View {
                 this.seasons.push(parseInt(season));
                 this.seasons = this.seasons.sort();
                 if(this.seasons.length === numSeasons) {
-                    console.log(this.seasons.length);
-                    console.log(numSeasons);
-                    this.players.forEach((player) => {
-                        console.log(`${player.fname}: ${this.getMetric(this.metricToggle.value, player)}`)
-                    })
                     let chartData = this.getChartData(this.metricToggle.value);
                     this.visual.reset();
                     this.visual.drawChart(this.chartToggle.value, this.seasons, chartData);

@@ -40,7 +40,6 @@ export default class DataVisual {
                 .scale(x)
                 .tickFormat(d3.format('d'))
                 .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
-        // this.addXAxisLabel(svg);
 
         // Y axis
         let y = d3.scaleLinear()
@@ -58,9 +57,12 @@ export default class DataVisual {
             .data(players)
             .enter()
             .append("path")
+            .attr("class", "line")
+            .attr("id", (d, i) => { return i })
             .attr("fill", "none")
             .attr("stroke", d => color(d.key))
             .attr("stroke-width", 3)
+            .style("opacity", "0")
             .attr("d", function (d) {
                 return d3.line()
                     .curve(d3.curveCardinal)
@@ -69,6 +71,21 @@ export default class DataVisual {
                     .y(d => y(d.metric))
                     (d.values)
             })    
+        
+        d3.selectAll(".line").each((d, i) => {
+            debugger;
+            let currentLine = `#line${i}`
+            let totalLength = d3.select(".line").node().getTotalLength();
+
+            d3.selectAll(currentLine)
+            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(5000)
+            .delay(100 * i)
+            .attr("stroke-dashoffset", 0)
+            .style("opacity", "1");
+        })
             
         this.addLegend(players, color);
         this.addTitle(seasons);
@@ -135,7 +152,13 @@ export default class DataVisual {
             .attr("x", function (d) { return xSubgroup(d.key); })
             .attr("width", xSubgroup.bandwidth())
             .attr("y", function (d) { return y(0); })
-            .attr("height", function (d) { return this.height - y(0); }.bind(this))
+            .attr("height", function (d) { 
+                // if(this.height - y(0) < 0) {
+                //     return this.height;
+                // } else {
+                    return this.height - y(0); 
+                // }
+            }.bind(this))
             .attr("fill", function (d) { return color(d.key); })
             .attr("value", function (d) {return d.value})
             .attr("idx", function(d) {return d.idx})
