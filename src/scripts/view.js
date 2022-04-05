@@ -82,8 +82,13 @@ export default class View {
         this.reset();
         let start = this.startSeasonToggle.value;
         let end = this.endSeasonToggle.value;
-        let numSeasons = parseInt(end) - parseInt(start) + 1        
-        this.iterateSeasons(start, end, numSeasons);
+        let numSeasons = parseInt(end) - parseInt(start) + 1   
+        
+        if(parseInt(end) >= parseInt(start)) {
+            this.iterateSeasons(start, end, numSeasons);
+        } else {
+            alert("End Season can't be before Start Season");
+        }
     }
 
     //Gets the season data for one season
@@ -153,6 +158,7 @@ export default class View {
     }
 
     getChartData(metric) {
+        //Data must be organized differently depending on chart selected
         let chartData = [];
         if(this.chartToggle.value === "line") {
             let metricLabel = this.metricToggle.value;

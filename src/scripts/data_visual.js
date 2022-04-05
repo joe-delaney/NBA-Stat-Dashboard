@@ -30,12 +30,10 @@ export default class DataVisual {
             .key(d => d.name)
             .entries(chartData);
 
-        // Scale the X axis
+        // X axis
         let x = d3.scaleLinear()
             .domain(d3.extent(chartData, d => d.season))
             .range([0, 1000]);
-
-        //Add the X axis
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0," + this.height + ")")
@@ -43,31 +41,15 @@ export default class DataVisual {
                 .scale(x)
                 .tickFormat(d3.format('d'))
                 .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
-        
-        svg.append("text")
-            .attr("class", "axis-label")
-            .attr("text-anchor", "end")
-            .attr("x", 520)
-            .attr("y", this.height + 30)
-            .text("Season");
+        this.addXAxisLabel(svg);
 
-        //Scale the Y axis
+        // Y axis
         let y = d3.scaleLinear()
             .domain([d3.min(chartData, d=>d.metric)*.95, d3.max(chartData, d => d.metric)])
             .range([this.height, 30]);
-
-        // Add Y axis
         svg.append("g")
             .call(d3.axisLeft().scale(y));
-        
-        svg.append("text")
-            .attr("class", "axis-label")
-            .attr("text-anchor", "end")
-            .attr("y", -50)
-            .attr("x", -this.height / 3)
-            .attr("dy", ".75em")
-            .attr("transform", "rotate(-90)")
-            .text(this.getLabel(this.metricLabel));
+        this.addYAxisLabel(svg);
 
         let playerNames = players.map(function (d) { return d.key }) // list of players
         let color = this.getColor(playerNames);
@@ -89,16 +71,14 @@ export default class DataVisual {
                     (d.values)
             })    
             
-        //add legend
         this.addLegend(players, color);
-        
-        //add title
         this.addTitle(seasons);
     }
 
     drawBarChart(seasons, chartData) {
         let svg = this.getSVG();
 
+        //Create values array from Y axis - min and max
         let values = [];
         chartData.forEach((row) => {
             Object.keys(row).forEach((key) => {
@@ -108,33 +88,35 @@ export default class DataVisual {
             })
         })
 
+        //Get each player for subgroups (remove season and metriclabel)
         let players = chartData.map((row) => Object.keys(row));
         players = players[0].slice(1, players[0].length-1);
         
-        // Add X axis
+        // X axis
         let x = d3.scaleBand()
             .domain(seasons)
             .range([0, 1000])
             .padding([0.2])
-
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(x)
                 .tickFormat(d3.format('d')));
+        this.addXAxisLabel(svg);
 
-        // Another scale for subgroup position
+        // X Axis - subgroup for players
         let xSubgroup = d3.scaleBand()
             .domain(players)
             .range([0, x.bandwidth()])
 
+        //Y Axis
         var y = d3.scaleLinear()
             .domain([d3.min(values, d => d) * .50, d3.max(values, d => d)*1.25])
             .range([this.height, 30]);
-
         svg.append("g")
             .call(d3.axisLeft(y));
-        
+        this.addYAxisLabel(svg);
+
         let color = this.getColor(players);
 
         // Show the bars
@@ -154,12 +136,8 @@ export default class DataVisual {
             .attr("height", function (d) {return this.height - y(d.value); }.bind(this))
             .attr("fill", function (d) { return color(d.key); });
 
-
-        //add legend
         let legendData = players.map((player) => { return {key: player, value: player}});
         this.addLegend(legendData, color);
-
-        //add title
         this.addTitle(seasons);
     }
 
@@ -201,10 +179,31 @@ export default class DataVisual {
                 "translate(" + this.margin.left + "," + this.margin.top + ")");
     }
 
+    addXAxisLabel(svg) {
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", 520)
+            .attr("y", this.height + 28)
+            .text("Season");
+    }
+
+    addYAxisLabel(svg) {
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "end")
+            .attr("y", -50)
+            .attr("x", -this.height / 3)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text(this.getLabel(this.metricLabel));
+    }
+
+    //["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0"]
     getColor(playerNames) {
         return d3.scaleOrdinal()
             .domain(playerNames)
-            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']);
+            .range(['#003f5c','#7a5195','#bc4f90','#ef5675','#ff764a','#ffa600']);
     }
 
     //add legend to the current chart
