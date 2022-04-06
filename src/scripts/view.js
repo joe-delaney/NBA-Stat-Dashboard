@@ -49,7 +49,10 @@ export default class View {
 
     //Searches for a player and adds him if found
     searchPlayer(query) {
-        if(query.length > 0) {
+        if(this.players.length === 6) {
+            alert("Maximum number of players selected");
+            this.searchInput.value = '';
+        } else if(query.length > 0) {
             DataFetcher.getPlayer(query)
             .then(result => {
                 let playerData = result.data;
@@ -107,7 +110,6 @@ export default class View {
             if(!this.alreadySelected(options)) {
                 this.addPlayer(new Player(options));
                 this.searchInput.value = '';
-
                 //Sort by player id to match API pull
                 this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
                 this.updateSelectedPlayers();
