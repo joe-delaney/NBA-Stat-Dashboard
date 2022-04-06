@@ -145,8 +145,6 @@ export default class View {
     //Fetch new season data
     handleSubmit(e) {
         e.preventDefault();
-        this.loading.classList.toggle("hide");
-        this.otherInputsForm.classList.toggle("disabled");
 
         if(this.players.length  === 0 ) {
             alert("Please select a player first");
@@ -158,6 +156,9 @@ export default class View {
             let start = this.startSeasonToggle.value;
             let end = this.endSeasonToggle.value;
             let numSeasons = parseInt(end) - parseInt(start) + 1   
+            
+            this.loading.classList.toggle("hide");
+            this.otherInputsForm.classList.toggle("disabled");
             
             if(parseInt(end) >= parseInt(start)) {
                 this.iterateSeasons(start, end, numSeasons);

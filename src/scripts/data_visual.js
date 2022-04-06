@@ -103,7 +103,7 @@ export default class DataVisual {
                 tooltipLine.attr('stroke', 'black')
                     .attr('x1', x(season))
                     .attr('x2', x(season))
-                    .attr('y1', 0)
+                    .attr('y1', 30)
                     .attr('y2', this.height)
                     .style('display', 'inline');
 
