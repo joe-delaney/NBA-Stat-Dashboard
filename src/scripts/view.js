@@ -2,6 +2,7 @@ import DataFetcher from "./data_fetcher";
 import Player from "./player";
 import DataVisual from "./data_visual";
 import SaveSVGAsPNG from "./saveSVGAsPNG";
+import AboutModal from "./about_modal";
 
 export default class View {
     constructor() {
@@ -44,6 +45,7 @@ export default class View {
         this.loading.classList.toggle("hide");
 
         this.visual = new DataVisual();
+        this.aboutModal = new AboutModal();
     }
 
     //Adds player to current user selection
@@ -159,7 +161,7 @@ export default class View {
             
             this.loading.classList.toggle("hide");
             this.otherInputsForm.classList.toggle("disabled");
-            
+
             if(parseInt(end) >= parseInt(start)) {
                 this.iterateSeasons(start, end, numSeasons);
             } else {

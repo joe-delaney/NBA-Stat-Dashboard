@@ -18,6 +18,11 @@
         <h1 class="main-logo">NBA Statistics Dashboard</h1>
         <ul class="links">
             <li>
+                <button class="about-button">
+                    <img class="link-logo" id="about-icon" src="./assets/about-icon.png" alt="">
+                </button>
+            </li>
+            <li>
                 <a href="https://github.com/joe-delaney/NBA-Stat-Dashboard">
                     <img class="link-logo" src="./assets/github-logo.png" alt="">
                 </a>
@@ -29,6 +34,39 @@
             </li>
         </ul>
     </nav>
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <nav class="modal-header">
+                <span class="close">&times;</span>
+                <h1 class="modal-main-header">How to use</h1>
+            </nav>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">Player Search</h2>
+                <ul>
+                    <li>Search for an NBA player by first or last name</li>
+                    <li>See currently selected players below search bar</li>
+                    <li>Remove a player from the current selection by clicking the x</li>
+                </ul>
+            </section>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">Custom Inputs</h2>
+                <ul>
+                    <li>Select start season and end season (End can't be before start)</li>
+                    <li>Select metric you want to analyze from the dropdown</li>
+                    <li>Select type of chart you want to see</li>
+                </ul>
+            </section>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">Data Visualization</h2>
+                <ul>
+                    <li>Click 'Visualize Data' and see your custom chart appear</li>
+                    <li>Hover over the chart to see the specific data points</li>
+                    <li>Click 'Download Chart' to save your chart as a PNG file</li>
+                </ul>
+            </section>
+        </div>
+    
+    </div>
     <nav class="user-inputs">
         <div class="player-search">
             <form class="player-search-form">
