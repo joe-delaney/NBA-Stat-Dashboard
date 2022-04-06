@@ -79,12 +79,33 @@ export default class DataVisual {
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(3000)
+                .duration(2500)
                 .delay(100 * i)
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0)
                 .style("stroke-width", 3);
         })
+
+        let toolTip = d3.select("#chart-tool-tip");
+        const tooltipLine = svg.append('line');
+
+        let tipBox = svg./*selectAll().data(players).enter().*/append('rect')
+            .attr('width', this.width)
+            .attr('height', this.height)
+            .attr('opacity', 0)
+            .on('mousemove', () => {
+                // debugger;
+                const season = Math.floor((x.invert(d3.mouse(tipBox.node())[0]) + 5) / 10) * 10;
+                tooltipLine.attr('stroke', 'black')
+                    .attr('x1', x(season))
+                    .attr('x2', x(season))
+                    .attr('y1', 0)
+                    .attr('y2', this.height);
+            })
+            .on('mouseout', () => {
+                if (tooltip) tooltip.style('display', 'none');
+                if (tooltipLine) tooltipLine.attr('stroke', 'none');
+            })
         
         this.addLegend(players, color);
         this.addTitle(seasons);
