@@ -196,12 +196,12 @@ export default class DataVisual {
             .attr("x", function (d) { return xSubgroup(d.key); })
             .attr("width", xSubgroup.bandwidth())
             .attr("y", function (d) { return y(0); })
-            .attr("height", function (d) { 
-                if(this.height - y(0) < 0) {
-                    return this.height;
-                } else {
-                    return this.height - y(0); 
-                }
+            .attr("height", function (d,i) { 
+                // if(this.height - y(0) < 0) {
+                //     return this.height/4;
+                // } else {
+                return 30; //this.height - y(0); 
+                // }
             }.bind(this))
             .attr("fill", function (d) { return color(d.key); })
             .attr("value", function (d) {return d.value})

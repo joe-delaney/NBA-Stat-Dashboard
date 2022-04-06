@@ -1,3 +1,4 @@
+//The code in this file is used to run the demos of the line and bar charts
 const Demo = {
     async demoLineChart() {
         //exit out of about modal
