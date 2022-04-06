@@ -39,6 +39,10 @@ export default class View {
         this.downloadButton.addEventListener("click", this.downloadButtonClicked);
         this.downloadButton.classList.toggle("hide");
 
+        //Save HTML Element related to loading wheel 
+        this.loading = document.querySelector('.loading');
+        this.loading.classList.toggle("hide");
+
         this.visual = new DataVisual();
     }
 
@@ -141,6 +145,8 @@ export default class View {
     //Fetch new season data
     handleSubmit(e) {
         e.preventDefault();
+        this.loading.classList.toggle("hide");
+        this.otherInputsForm.classList.toggle("disabled");
 
         if(this.players.length  === 0 ) {
             alert("Please select a player first");
@@ -193,6 +199,8 @@ export default class View {
                     this.visual.reset();
                     this.visual.drawChart(this.chartToggle.value, this.seasons, chartData);
                     setTimeout(() => this.downloadButton.classList.toggle("hide"), 1500);
+                    this.loading.classList.toggle("hide");
+                    this.otherInputsForm.classList.toggle("disabled");
                 }
             });
     }
