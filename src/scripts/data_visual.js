@@ -172,7 +172,7 @@ export default class DataVisual {
 
         //Y Axis
         var y = d3.scaleLinear()
-            .domain([d3.min(values, d => d) * .50, d3.max(values, d => d)*1.25])
+            .domain([0, d3.max(values, d => d * 1.25)])
             .range([this.height, 30]);
         svg.append("g")
             .call(d3.axisLeft(y));
@@ -196,13 +196,7 @@ export default class DataVisual {
             .attr("x", function (d) { return xSubgroup(d.key); })
             .attr("width", xSubgroup.bandwidth())
             .attr("y", function (d) { return y(0); })
-            .attr("height", function (d,i) { 
-                // if(this.height - y(0) < 0) {
-                //     return this.height/4;
-                // } else {
-                return 30; //this.height - y(0); 
-                // }
-            }.bind(this))
+            .attr("height", function (d,i) { return this.height - y(0);}.bind(this))
             .attr("fill", function (d) { return color(d.key); })
             .attr("value", function (d) {return d.value})
             .attr("idx", function(d) {return d.idx})
