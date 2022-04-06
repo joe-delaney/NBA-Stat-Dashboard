@@ -67,7 +67,10 @@ export default class View {
                         this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
                         this.updateSelectedPlayers();
                     } else {
-                        alert("Player is already selected");
+                        let li = document.createElement("li");
+                        li.innerHTML = `Player is already selected`;
+                        li.classList.add("no-results");
+                        this.searchResults.append(li);
                     }
                 } else {
                     playerData = playerData.sort((a,b) => a.last_name > b.last_name ? 1: -1);
@@ -109,7 +112,10 @@ export default class View {
                 this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
                 this.updateSelectedPlayers();
             } else {
-                alert("Player is already selected");
+                let li = document.createElement("li");
+                li.innerHTML = `Player is already selected`;
+                li.classList.add("no-results");
+                this.searchResults.append(li);
             }
         }
     }
@@ -293,6 +299,6 @@ export default class View {
     }
 
     downloadButtonClicked(e) {
-        saveSvgAsPng(document.getElementById("svg"), "diagram.png", {backgroundColor: "white"});
+        saveSvgAsPng(document.getElementById("svg"), "nba-stats-chart.png", {backgroundColor: "white"});
     }
 }

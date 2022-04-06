@@ -87,24 +87,48 @@ export default class DataVisual {
         })
 
         let toolTip = d3.select("#chart-tool-tip");
-        const tooltipLine = svg.append('line');
+        const tooltipLine = svg.append('line').attr("class", "tool-tip-line");
 
         let tipBox = svg./*selectAll().data(players).enter().*/append('rect')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('opacity', 0)
             .on('mousemove', () => {
-                // debugger;
-                const season = Math.floor((x.invert(d3.mouse(tipBox.node())[0]) + 5) / 10) * 10;
+                if ((d3.mouse(tipBox.node())[0]) > 1050) {
+                    if (toolTip) toolTip.style('display', 'none');
+                    if (tooltipLine) tooltipLine.style('display', 'none');
+                } else {
+                const season = Math.floor((x.invert(d3.mouse(tipBox.node())[0])));
+                
                 tooltipLine.attr('stroke', 'black')
                     .attr('x1', x(season))
                     .attr('x2', x(season))
                     .attr('y1', 0)
-                    .attr('y2', this.height);
+                    .attr('y2', this.height)
+                    .style('display', 'inline');
+
+                toolTip.html(season)
+                    .style('display', 'inline')
+                    .style('left', d3.event.pageX + 20 + "px")
+                    .style('top', d3.event.pageY - 20 + "px")
+                    .selectAll()
+                    .data(players).enter()
+                    .append('div')
+                    .style('color', d => d.color)
+                    .html(d => { 
+                        let metric;
+                        d.values.forEach((value) => {
+                            if(value.season === season) {
+                                metric = value.metric;
+                            }
+                        });
+                        return `${d.key}: ${metric}`}
+                        );
+                }
             })
             .on('mouseout', () => {
-                if (tooltip) tooltip.style('display', 'none');
-                if (tooltipLine) tooltipLine.attr('stroke', 'none');
+                if (toolTip) toolTip.style('display', 'none');
+                if (tooltipLine) tooltipLine.style('display', 'none');
             })
         
         this.addLegend(players, color);
@@ -174,7 +198,7 @@ export default class DataVisual {
             .attr("y", function (d) { return y(0); })
             .attr("height", function (d) { 
                 // if(this.height - y(0) < 0) {
-                //     return this.height;
+                //     return this.height + 100;
                 // } else {
                     return this.height - y(0); 
                 // }
@@ -203,7 +227,7 @@ export default class DataVisual {
             .on("mouseout", function (d) {
                 d3.select(this)
                     .style("fill", color(d.key))
-                    .transition().duration(250)
+                    .transition().duration(200)
                     .style("stroke-opacity", "0");
 
                 toolTip.style("display", "none")
