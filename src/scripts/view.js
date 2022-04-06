@@ -3,6 +3,7 @@ import Player from "./player";
 import DataVisual from "./data_visual";
 import SaveSVGAsPNG from "./saveSVGAsPNG";
 import AboutModal from "./about_modal";
+import Demo from "./demo"
 
 export default class View {
     constructor() {
@@ -43,6 +44,14 @@ export default class View {
         //Save HTML Element related to loading wheel 
         this.loading = document.querySelector('.loading');
         this.loading.classList.toggle("hide");
+
+        //Save HTML Elements related to demo of the project
+        this.demoLineButton = document.querySelector('#demo-line');
+        this.demoBarButton = document.querySelector('#demo-bar');
+        this.demoLineChart = Demo.demoLineChart.bind(this);
+        this.demoLineButton.addEventListener("click", this.demoLineChart)
+        this.demoBarChart = Demo.demoBarChart.bind(this);
+        this.demoBarButton.addEventListener("click", this.demoBarChart)
 
         this.visual = new DataVisual();
         this.aboutModal = new AboutModal();
@@ -157,12 +166,11 @@ export default class View {
             this.reset();
             let start = this.startSeasonToggle.value;
             let end = this.endSeasonToggle.value;
-            let numSeasons = parseInt(end) - parseInt(start) + 1   
-            
-            this.loading.classList.toggle("hide");
-            this.otherInputsForm.classList.toggle("disabled");
+            let numSeasons = parseInt(end) - parseInt(start) + 1;
 
             if(parseInt(end) >= parseInt(start)) {
+                this.loading.classList.toggle("hide");
+                this.otherInputsForm.classList.toggle("disabled");
                 this.iterateSeasons(start, end, numSeasons);
             } else {
                 alert("End Season can't be before Start Season");
@@ -314,4 +322,10 @@ export default class View {
     downloadButtonClicked(e) {
         saveSvgAsPng(document.getElementById("svg"), "nba-stats-chart.png", {backgroundColor: "white"});
     }
+
+    //The sleep function will be used by the demo
+    sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
 }

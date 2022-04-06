@@ -197,11 +197,11 @@ export default class DataVisual {
             .attr("width", xSubgroup.bandwidth())
             .attr("y", function (d) { return y(0); })
             .attr("height", function (d) { 
-                // if(this.height - y(0) < 0) {
-                //     return this.height + 100;
-                // } else {
+                if(this.height - y(0) < 0) {
+                    return this.height;
+                } else {
                     return this.height - y(0); 
-                // }
+                }
             }.bind(this))
             .attr("fill", function (d) { return color(d.key); })
             .attr("value", function (d) {return d.value})
@@ -304,7 +304,6 @@ export default class DataVisual {
             .text(this.getLabel(this.metricLabel));
     }
 
-    //["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0"]
     getColor(playerNames) {
         return d3.scaleOrdinal()
             .domain(playerNames)
@@ -331,6 +330,14 @@ export default class DataVisual {
             .attr("x", 1120)
             .attr("y", (d, i) => i * 30 + 355)
             .text(d => d.key);
+
+        legend.append("text")
+            .attr("x", 1120)
+            .attr("y", 320)
+            .style("fill", "black")
+            .style("font-size", 16)
+            .style("font-family", "Arial Black")
+            .text("Player Name")
 
         legend.transition().duration(500).delay(function (d, i) { return 1300 + 100 * i; }).style("opacity", "1");
     }

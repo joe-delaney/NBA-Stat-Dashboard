@@ -15,7 +15,10 @@
 
 <body>
     <nav class="main-nav">
-        <h1 class="main-logo">NBA Statistics Dashboard</h1>
+        <ul class="main-logo-items">
+            <img class="link-logo" src="./assets/nba-logo.png" alt="">
+            <h1 class="main-logo">NBA Statistics Dashboard</h1>
+        </ul>
         <ul class="links">
             <li>
                 <button class="about-button">
@@ -30,6 +33,11 @@
             <li>
                 <a href="https://www.linkedin.com/in/joseph-delaney-46985b76/">
                     <img class="link-logo" src="./assets/linkedin-logo.png">
+                </a>
+            </li>
+            <li>
+                <a href="https://angel.co/u/joe-delaney-6">
+                    <img class="link-logo" src="./assets/angellist-logo.png">
                 </a>
             </li>
         </ul>
@@ -54,6 +62,9 @@
                     <li>Select start season and end season (End can't be before start)</li>
                     <li>Select metric you want to analyze from the dropdown</li>
                     <li>Select type of chart you want to see</li>
+                    <ul>
+                        <li class="italic">Line charts may be better for longer time periods while Bar charts may be better for shorter time periods</li>
+                    </ul>
                 </ul>
             </section>
             <section class="modal-subsection">
@@ -64,13 +75,23 @@
                     <li>Click 'Download Chart' to save your chart as a PNG file</li>
                 </ul>
             </section>
+            <nav class="demo-nav">
+                <ul class="demo-buttons">
+                    <li>
+                        <button class="demo-button" id="demo-line">Demo Line Chart</button>
+                    </li>
+                    <li>
+                        <button class="demo-button" id="demo-bar">Demo Bar Chart</button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     
     </div>
     <nav class="user-inputs">
         <div class="player-search">
             <form class="player-search-form">
-                <input type="input" class="player-search-input" placeholder="Search for a player">
+                <input type="input" class="player-search-input no-outline" placeholder="Search for a player">
                 <input type="submit" value="Search Player" class="button">
             </form>
             <ul class="search-results"></ul>
@@ -78,13 +99,13 @@
         <ul class="selected-players"></ul>
         <form class="other-inputs">
             <label class="user-input-label">Start Season
-                <input class="user-input" id=start-season type="number" min="1946" max="2021" step="1" value="2021" />
+                <input class="user-input no-outline" id=start-season type="number" min="1946" max="2021" step="1" value="2021" />
             </label>
             <label class="user-input-label">End Season
-                <input class="user-input" id=end-season type="number" min="1946" max="2021" step="1" value="2021" />
+                <input class="user-input no-outline" id=end-season type="number" min="1946" max="2021" step="1" value="2021" />
             </label>
             <label class="user-input-label">Metric
-                <select class="user-input" id="metric">
+                <select class="user-input no-outline" id="metric">
                     <option value="ppg" selected>Points per game</option>
                     <option value="apg">Assists per game</option>
                     <option value="rpg">Rebounds per game</option>
@@ -94,7 +115,7 @@
                 </select>
             </label>
             <label class="user-input-label">Chart Type
-                <select class="user-input" id="chart">
+                <select class="user-input no-outline" id="chart">
                     <option value="line" selected>Line Chart</option>
                     <option value="bar">Bar Chart</option>
                 </select>

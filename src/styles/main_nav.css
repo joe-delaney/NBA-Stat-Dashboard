@@ -6,9 +6,12 @@
     color: white;
 }
 
+.main-logo-items {
+    display: flex;
+    align-items: center;
+}
+
 .main-logo {
-    padding-left: 30px;
-    padding-top: 10px;
     font-weight: 700;
     font-size: 20px;
     font-family: sans-serif;
