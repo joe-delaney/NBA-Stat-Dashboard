@@ -328,6 +328,7 @@ body {
   margin: auto;
   border: 1px solid #888;
   border-radius: 5px;
+  box-shadow: 0 1px 10px;
   width: 33%;
 }
 
