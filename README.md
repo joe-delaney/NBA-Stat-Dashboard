@@ -1,7 +1,259 @@
-# JS Project Proposal: NBA Statistics Dashboard
+# NBA Statistics Dashboard <img src="https://user-images.githubusercontent.com/65872033/162228109-b0beb6e8-3281-4b06-b710-d462465c0cf7.png" width="150" height="150" /> 
 
-# Background
-The NBA Statistics Dashboard will provide the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations (see the **Functionality & MVP** and **Bonus** sections for more info).
+
+# Description
+The NBA Statistics Dashboard provides the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations.
+
+**Try it out for yourself here: [NBA Statistics Dashboard](https://nba-stats-dashboard.herokuapp.com/)**
+
+# Technologies, Libraries, APIs
+* Vanilla Javascript
+* HTML5 / CSS3
+* The D3 library to render the data visualizations
+* The [balldontlie API](https://www.balldontlie.io/#introduction) to source the NBA statistics data
+* Webpack and Babel to bundle and transpile the source Javascript code
+* npm to manage project dependencies
+
+# Dashboard Functionality
+## How to Use
+<img width="718" alt="About Modal" src="https://user-images.githubusercontent.com/65872033/162224188-449e7046-23e8-4c7e-87b3-fcedd25b8212.png">
+
+## Player Search and Selection
+![Search-and-select-player-demo](https://user-images.githubusercontent.com/65872033/162221416-5e01a43d-054e-406f-8a0e-77a5ee25d3c2.gif)
+
+## Visualize Line Chart
+![Line Chart Demo](https://user-images.githubusercontent.com/65872033/162226309-857f67e1-927b-4cd5-a7d9-7c7be96b6715.gif)
+```js
+drawLineChart(seasons, chartData) {
+        let svg = this.getSVG();
+
+        //Group the data by player
+        let players = d3.nest()
+            .key(d => d.name)
+            .entries(chartData);
+
+        // X axis
+        let x = d3.scaleLinear()
+            .domain(d3.extent(chartData, d => d.season))
+            .range([0, 1000]);
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(d3.axisBottom()
+                .scale(x)
+                .tickFormat(d3.format('d'))
+                .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
+
+        // Y axis
+        let y = d3.scaleLinear()
+            .domain([d3.min(chartData, d=>d.metric)*.95, d3.max(chartData, d => d.metric)])
+            .range([this.height, 30]);
+        svg.append("g")
+            .call(d3.axisLeft().scale(y));
+        this.addYAxisLabel(svg);
+
+        //Set Color Scheme
+        let playerNames = players.map(function (d) { return d.key }) // list of players
+        let color = this.getColor(playerNames);
+
+        // Add the lines
+        svg.selectAll(".line")
+            .data(players)
+            .enter()
+            .append("path")
+            .attr("class", "line")
+            .attr("id", (d, i) => { return "line"+i })
+            .attr("fill", "none")
+            .attr("stroke", d => color(d.key))
+            .attr("stroke-width", 3)
+            .attr("d", function (d) {
+                return d3.line()
+                    .curve(d3.curveCardinal)
+                    .defined(d => d.metric !== 0)
+                    .x(d => x(d.season))
+                    .y(d => y(d.metric))
+                    (d.values)
+            })    
+
+        //Animate the lines
+        svg.selectAll(".line").style("opacity", "1");
+        svg.selectAll(".line").each(function(d,i) {
+            let totalLength = svg.select("#line" + i).node().getTotalLength();
+            svg.selectAll("#line"+i)
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2500)
+                .delay(100 * i)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .style("stroke-width", 3);
+        })
+
+        //Add toolTip and related line
+        let toolTip = d3.select("#chart-tool-tip");
+        const tooltipLine = svg.append('line').attr("class", "tool-tip-line");
+
+        let tipBox = svg.append('rect')
+            .attr('width', this.width)
+            .attr('height', this.height)
+            .attr('opacity', 0)
+            .on('mousemove', () => {
+                if ((d3.mouse(tipBox.node())[0]) > 1050) {
+                    if (toolTip) toolTip.style('display', 'none');
+                    if (tooltipLine) tooltipLine.style('display', 'none');
+                } else {
+                const season = Math.floor((x.invert(d3.mouse(tipBox.node())[0])));
+                
+                tooltipLine.attr('stroke', 'black')
+                    .attr('x1', x(season))
+                    .attr('x2', x(season))
+                    .attr('y1', 30)
+                    .attr('y2', this.height)
+                    .style('display', 'inline');
+
+                toolTip.html(season)
+                    .style('display', 'inline')
+                    .style('left', d3.event.pageX + 20 + "px")
+                    .style('top', d3.event.pageY - 20 + "px")
+                    .selectAll()
+                    .data(players).enter()
+                    .append('div')
+                    .style('color', d => d.color)
+                    .html(d => { 
+                        let metric;
+                        d.values.forEach((value) => {
+                            if(value.season === season) {
+                                metric = value.metric;
+                            }
+                        });
+                        return `${d.key}: ${metric}`}
+                        );
+                }
+            })
+            .on('mouseout', () => {
+                if (toolTip) toolTip.style('display', 'none');
+                if (tooltipLine) tooltipLine.style('display', 'none');
+            })
+        
+        this.addLegend(players, color);
+        this.addTitle(seasons);
+    }
+```
+
+## Visualize Bar Chart
+![Bar Chart Demo](https://user-images.githubusercontent.com/65872033/162226664-b7af1e5f-55b6-4416-96ac-bcb38f2251f9.gif)
+```js
+    drawBarChart(seasons, chartData) {
+        let svg = this.getSVG();
+
+        //Create values array for Y axis - min and max
+        let values = [];
+        chartData.forEach((row) => {
+            Object.keys(row).forEach((key) => {
+                if(key !== "season" && key !== 'metricLabel') {
+                    values.push(row[key]);
+                }
+            })
+        })
+
+        //Get each player name for subgroups
+        let players = chartData.map((row) => Object.keys(row));
+        players = players[0].slice(1, players[0].length-1);
+        
+        // X axis
+        let x = d3.scaleBand()
+            .domain(seasons)
+            .range([0, 1000])
+            .padding([0.2])
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .style("font-weight", 600)
+            .call(d3.axisBottom(x)
+                .tickFormat(d3.format('d'))
+                .tickSize(0));
+
+        // X Axis - subgroup for players
+        let xSubgroup = d3.scaleBand()
+            .domain(players)
+            .range([0, x.bandwidth()])
+
+        //Y Axis
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(values, d => d * 1.25)])
+            .range([this.height, 30]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
+        this.addYAxisLabel(svg);
+
+        //Set Color Scheme
+        let color = this.getColor(players);
+
+        let toolTip = d3.select("#chart-tool-tip");
+
+        // Show the bars
+        let bars = svg.append("g")
+            .selectAll("g")
+            .data(chartData)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) { return "translate(" + x(d.season) + ",0)"; })
+        
+        bars.selectAll("rect")
+            .data(function (d) { return players.map(function (key) { return { key: key, value: d[key]}; }); })
+            .enter().append("rect")
+            .attr("x", function (d) { return xSubgroup(d.key); })
+            .attr("width", xSubgroup.bandwidth())
+            .attr("y", function (d) { return y(0); })
+            .attr("height", function (d,i) { return this.height - y(0);}.bind(this))
+            .attr("fill", function (d) { return color(d.key); })
+            .attr("value", function (d) {return d.value})
+            .attr("idx", function(d) {return d.idx})
+            .on("mouseover", function (d) {  
+                //Add toolTip on hover
+                toolTip.style("left", d3.event.pageX + 10 + "px")
+                toolTip.style("top", d3.event.pageY - 35 + "px")
+                toolTip.style("display", "inline-block")
+                toolTip.style("opacity", "0.9");
+
+                //Get the data associated with bar hovered over
+                let barData = this.__data__
+
+                toolTip.html(barData.key + "<br>" + barData.value);
+                
+                //Add styling to bar on hover
+                d3.select(this)
+                    .style("fill", "#FFFF99")
+                    .style("stroke", "Black")
+                    .style("stroke-width", "1.8px")
+                    .style("stroke-opacity", "1");
+                
+            })
+            .on("mouseout", function (d) {
+                //Remove styling on mouseout
+                d3.select(this)
+                    .style("fill", color(d.key))
+                    .transition().duration(200)
+                    .style("stroke-opacity", "0");
+
+                //Remove tooltip on mouseout
+                toolTip.style("display", "none")
+            });
+        
+        //Animate bars
+        bars.selectAll("rect")
+            .transition()
+            .delay(function (d) { return Math.random() * 1000; })
+            .duration(1000)
+            .attr("y", function (d) { return y(d.value); })
+            .attr("height", function (d) { return this.height - y(d.value); }.bind(this));
+
+        let legendData = players.map((player) => { return {key: player, value: player}});
+        this.addLegend(legendData, color);
+        this.addTitle(seasons);
+    }
+ ```
 
 # Functionality & MVPs
 With the NBA Statistics Dashboard, users will be able to:
@@ -10,36 +262,10 @@ With the NBA Statistics Dashboard, users will be able to:
 * Select the timeframe (start season and end season) to analyze
 * Choose from common NBA statistics and metrics such as points-per-game (ppg)
 * Toggle between different data visualizations to best present the data
+* Hover over data visualizations to highlight specific statistics
+* Download their data visualization as a PNG file
 
-In addition, this project will include:
-* An About modal describing the instructions for using the dashboard
-* A production README
-
-# Wireframes
-<img width="875" alt="NBA Statistics Dashboard Wireframe" src="https://user-images.githubusercontent.com/65872033/161177294-63b4ea8c-eaf3-4515-b9e1-d41300b33ee4.png">
-
-* Nav links include links to this project's Github repo, my LinkedIn, and the **About** modal.
-* The main content on the page will be the selected data visualization / chart.
-* To the left of the chart, there will be a key of the current chart showing the current selected players. 
-* To the bottom right of the chart, there will be a dropdown that allows the user to select the type of chart to display.
-* On top of the chart, there will be the user inputs in the form of a search bar for the player name and dropdowns to select the start season, the end season, and the metric.
-
-# Technologies, Libraries, APIs
-This project will be implemented with the following technologies:
-* The D3 library to render the data visualizations
-* The balldontlie API to source the NBA statistics data
-* Webpack and Babel to bundle and transpile the source Javascript code
-* npm to manage project dependencies
-
-# Implementation Timeline
-* **Friday Afternoon & Weekend:** Setup project, including getting webpack up and running. Spend time understanding and getting comfortable pulling data from the API. Practice rendering different kinds of charts and data visualizations using the D3 library. 
-* **Monday:** Spend the day connecting the data sourced from the API to the data visualizations created by the D3 library. Start to get simple charts displaying on the webpage after a successful data pull from the API.
-* **Tuesday:** Implement the user search feature and make sure that the website transitions from a successful search to the correct data visualization. Begin to implement more complex data visualizations and add them to the options for the user to select.
-* **Wednesday:** Finish implementing the more complex data visualizations and any other remaining user functionality. Upgrade the styling of the application using CSS to make it look visually appealing. If there is time, start on the bonuses.
-* **Thursday Morning:** Deploy to GitHub and rewrite this proposal as a production README.
-
-# Bonus Features
-As this is an interactive user dashboard, there are many additional options that can be implemented for the user to choose from. Some potential updates include:
+# Future Considerations
 * Add options for showing statistics by NBA Team
 * Add additional, more complex data visualizations (i.e. animated bar chart race)
 * Create a user-driven simulation based on statistics / shot probabilities of players
