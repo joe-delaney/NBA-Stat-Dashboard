@@ -355,6 +355,10 @@ body {
   padding: 10px;
 }
 
+.modal-subsection > ul {
+  list-style: decimal;
+}
+
 .modal-main-header {
   font-weight: 700;
   font-size: 36px;
@@ -372,6 +376,8 @@ body {
 }
 
 .demo-nav {
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   border-top: 1px solid black;
 }
@@ -386,5 +392,29 @@ body {
   padding: 5px;
   margin-right: 20px;
   border: 2px solid black;
+  border-radius: 5px;
+}
+
+.demo-button:hover, .color-palette-select:hover {
+  background-color: lightgrey;
+}
+
+.instruction {
+  list-style: circle;
+  margin-left: 20px;
+}
+
+.color-palette-select {
+  border: 2px solid black;
+  padding: 5px;
+  font-size: 16px;
   border-radius: 3px;
+}
+
+.initial-instructions {
+  margin-top: 10px;
+  margin-right: 300px;
+  border: 2px solid black;
+  border-radius: 5px;
+  box-shadow: 0 1px 10px;
 }

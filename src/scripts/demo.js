@@ -3,6 +3,7 @@ const Demo = {
     async demoLineChart() {
         //exit out of about modal
         this.aboutModal.aboutModal.style.display = "none";
+        this.initialInstructions.style.display = "none";
 
         //Disable buttons while demo is running
         this.otherInputsForm.classList.toggle("disabled");
@@ -97,6 +98,7 @@ const Demo = {
     async demoBarChart() {
         //exit out of about modal
         this.aboutModal.aboutModal.style.display = "none";
+        this.initialInstructions.style.display = "none";
 
         //Disable buttons while demo is running
         this.searchForm.classList.toggle("disabled");

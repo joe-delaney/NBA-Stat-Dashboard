@@ -302,6 +302,7 @@ export default class DataVisual {
         return d3.scaleOrdinal()
             .domain(playerNames)
             .range(['#003f5c','#7a5195','#bc4f90','#ef5675','#ff764a','#ffa600']);
+            // .range(["#ca0020", "#f4a582", "#d5d5d5", "#92c5de", "#0571b0"]);
     }
 
     //add legend to the current chart

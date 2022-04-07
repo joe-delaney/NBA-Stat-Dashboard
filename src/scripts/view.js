@@ -53,6 +53,12 @@ export default class View {
         this.demoBarChart = Demo.demoBarChart.bind(this);
         this.demoBarButton.addEventListener("click", this.demoBarChart)
 
+        this.initialInstructions = document.querySelector(".initial-instructions")
+        this.initialDemoLineButton = document.querySelector('#initial-demo-line');
+        this.initialDemoBarButton = document.querySelector('#initial-demo-bar');
+        this.initialDemoLineButton.addEventListener("click", this.demoLineChart)
+        this.initialDemoBarButton.addEventListener("click", this.demoBarChart)
+
         this.visual = new DataVisual();
         this.aboutModal = new AboutModal();
     }
@@ -169,6 +175,7 @@ export default class View {
             let numSeasons = parseInt(end) - parseInt(start) + 1;
 
             if(parseInt(end) >= parseInt(start)) {
+                this.initialInstructions.style.display = "none";
                 this.loading.classList.toggle("hide");
                 this.otherInputsForm.classList.toggle("disabled");
                 this.iterateSeasons(start, end, numSeasons);

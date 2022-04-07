@@ -49,30 +49,34 @@
                 <h1 class="modal-main-header">How to use</h1>
             </nav>
             <section class="modal-subsection">
-                <h2 class="modal-subheader">Player Search</h2>
+                <h2 class="modal-subheader">1) Select your players</h2>
                 <ul>
-                    <li>Search for an NBA player by first and/or last name</li>
-                    <li>See currently selected players below search bar</li>
-                    <li>Remove a player from the current selection by clicking the x</li>
+                    <li class="instruction">Search for an NBA player by first and/or last name</li>
+                    <li class="instruction">See currently selected players below search bar</li>
+                    <li class="instruction">Remove a player from the current selection by clicking the x</li>
                 </ul>
             </section>
             <section class="modal-subsection">
-                <h2 class="modal-subheader">Custom Inputs</h2>
+                <h2 class="modal-subheader">2) Choose your custom inputs</h2>
                 <ul>
-                    <li>Select start season and end season (End can't be before start)</li>
-                    <li>Select metric you want to analyze from the dropdown</li>
-                    <li>Select type of chart you want to see</li>
+                    <li class="instruction">Select start season and end season (End can't be before start)</li>
+                    <li class="instruction">Select metric you want to analyze from the dropdown</li>
+                    <li class="instruction">Select type of chart you want to see</li>
                     <ul>
-                        <li class="italic">Line charts may be better for longer time periods while Bar charts may be better for shorter time periods</li>
+                        <li class="italic instruction">Line charts may be better for longer time periods while Bar charts may be
+                            better for shorter time periods</li>
                     </ul>
                 </ul>
             </section>
             <section class="modal-subsection">
-                <h2 class="modal-subheader">Data Visualization</h2>
+                <h2 class="modal-subheader">3) Visualize the Data</h2>
                 <ul>
-                    <li>Click 'Visualize Data' and see your custom chart appear</li>
-                    <li>Hover over the chart to see the specific data points</li>
-                    <li>Click 'Download Chart' to save your chart as a PNG file</li>
+                    <li class="instruction">Click 'Visualize Data' and see your custom chart appear</li>
+                    <li class="instruction">Hover over the chart to see the specific data points</li>
+                    <li class="instruction">Click 'Download Chart' to save your chart as a PNG file</li>
+                    <ul>
+                        <li class="italic instruction">Use the Demo buttons below to see the dashboard in action!</li>
+                    </ul>
                 </ul>
             </section>
             <nav class="demo-nav">
@@ -84,9 +88,12 @@
                         <button class="demo-button" id="demo-bar">Demo Bar Chart</button>
                     </li>
                 </ul>
+                <!-- <select class="color-palette-select no-outline">
+                    <option value="1">Color Palette 1</option>
+                    <option value="2">Color Palette 2</option>
+                </select> -->
             </nav>
         </div>
-    
     </div>
     <nav class="user-inputs">
         <div class="player-search">
@@ -125,7 +132,57 @@
         </form>
     </nav>
     <section class="main-content">
-        <div id="data-visualization" width="auto" height="auto"></div>
+        <div class="initial-instructions">
+            <nav class="modal-header">
+                <h1 class="modal-main-header">How to use</h1>
+            </nav>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">1) Select your players</h2>
+                <ul>
+                    <li class="instruction">Search for an NBA player by first and/or last name</li>
+                    <li class="instruction">See currently selected players below search bar</li>
+                    <li class="instruction">Remove a player from the current selection by clicking the x</li>
+                </ul>
+            </section>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">2) Choose your custom inputs</h2>
+                <ul>
+                    <li class="instruction">Select start season and end season (End can't be before start)</li>
+                    <li class="instruction">Select metric you want to analyze from the dropdown</li>
+                    <li class="instruction">Select type of chart you want to see</li>
+                    <ul>
+                        <li class="italic instruction">Line charts may be better for longer time periods while Bar charts may be
+                            better for shorter time periods</li>
+                    </ul>
+                </ul>
+            </section>
+            <section class="modal-subsection">
+                <h2 class="modal-subheader">3) Visualize the Data</h2>
+                <ul>
+                    <li class="instruction">Click 'Visualize Data' and see your custom chart appear</li>
+                    <li class="instruction">Hover over the chart to see the specific data points</li>
+                    <li class="instruction">Click 'Download Chart' to save your chart as a PNG file</li>
+                    <ul>
+                        <li class="italic instruction">Use the Demo buttons below to see the dashboard in action!</li>
+                    </ul>
+                </ul>
+            </section>
+            <nav class="demo-nav">
+                <ul class="demo-buttons">
+                    <li>
+                        <button class="demo-button" id="initial-demo-line">Demo Line Chart</button>
+                    </li>
+                    <li>
+                        <button class="demo-button" id="initial-demo-bar">Demo Bar Chart</button>
+                    </li>
+                </ul>
+                <!-- <select class="color-palette-select no-outline">
+                    <option value="1">Color Palette 1</option>
+                    <option value="2">Color Palette 2</option>
+                </select> -->
+            </nav>
+        </div>
+        <div id="data-visualization"></div>
         <div id="chart-tool-tip"></div>
         <div class="download-container">
             <button class="download button">Download Chart</button>
