@@ -18,6 +18,8 @@ With the NBA Statistics Dashboard, users will be able to:
 * Choose from common NBA statistics and metrics such as points-per-game (ppg)
 * Toggle between different data visualizations to best present the data
 
+![Search-and-select-player-demo](https://user-images.githubusercontent.com/65872033/162221416-5e01a43d-054e-406f-8a0e-77a5ee25d3c2.gif)
+
 # Implementation Timeline
 * **Friday Afternoon & Weekend:** Setup project, including getting webpack up and running. Spend time understanding and getting comfortable pulling data from the API. Practice rendering different kinds of charts and data visualizations using the D3 library. 
 * **Monday:** Spend the day connecting the data sourced from the API to the data visualizations created by the D3 library. Start to get simple charts displaying on the webpage after a successful data pull from the API.
