@@ -269,3 +269,111 @@ With the NBA Statistics Dashboard, users will be able to:
 * Add options for showing statistics by NBA Team
 * Add additional, more complex data visualizations (i.e. animated bar chart race)
 * Create a user-driven simulation based on statistics / shot probabilities of players
+
+# Additional Code Snippets
+## Data Visualization Helper Methods
+```js
+//return the svg to render the chart on
+    getSVG() {
+        return d3.select("#data-visualization")
+            .append("svg")
+            .attr("id", "svg")
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + this.margin.left + "," + this.margin.top + ")");
+    }
+    
+    //add legend to the current chart
+    addLegend(players, color) {
+        let legend = d3.select("svg")
+            .selectAll('g.legend')
+            .data(players)
+            .enter()
+            .append("g")
+            .attr("class", "legend")
+            .style("opacity", "0");
+
+        legend.append("circle")
+            .attr("cx", 1100)
+            .attr('cy', (d, i) => i * 30 + 350)
+            .attr("r", 6)
+            .style("fill", d => color(d.key))
+
+        legend.append("text")
+            .attr("x", 1120)
+            .attr("y", (d, i) => i * 30 + 355)
+            .text(d => d.key);
+
+        legend.append("text")
+            .attr("x", 1120)
+            .attr("y", 320)
+            .style("fill", "black")
+            .style("font-size", 16)
+            .style("font-family", "Arial Black")
+            .text("Player Name")
+
+        legend.transition().duration(500).delay(function (d, i) { return 1300 + 100 * i; }).style("opacity", "1");
+    }
+    
+    //add title to the current chart
+    addTitle(seasons) {
+        d3.select("svg")
+            .append("text")
+            .attr("x", this.margin.left)
+            .attr("y", 20)
+            .attr("text-anchor", "left")
+            .text(`${this.getLabel(this.metricLabel)} from ${seasons[0]} to ${seasons[seasons.length - 1]}`)
+            .style("fill", "black")
+            .style("font-size", 16)
+            .style("font-family", "Arial Black")
+    }
+```
+## Search Player
+```js
+//Searches for a player and adds him if found
+//list elements will be appended to the search bar when the search returns more than one player
+    searchPlayer(query) {
+        if(this.players.length === 6) {
+            alert("Maximum number of players selected");
+            this.searchInput.value = '';
+        } else if(query.length > 0) {
+            DataFetcher.getPlayer(query)
+            .then(result => {
+                let playerData = result.data;
+                if(playerData.length === 0) {
+                    let li = document.createElement("li");
+                    li.innerHTML = `No players found`;
+                    li.classList.add("no-results");
+                    this.searchResults.append(li);
+                } else if(playerData.length === 1) {
+                    if(!this.alreadySelected(playerData[0])) {
+                        this.addPlayer(new Player(playerData[0]));
+                        this.searchInput.value = '';
+
+                        //Sort by player id to match API pull
+                        this.players = this.players.sort((a, b) => a.id > b.id ? 1 : -1);
+                        this.updateSelectedPlayers();
+                    } else {
+                        let li = document.createElement("li");
+                        li.innerHTML = `Player is already selected`;
+                        li.classList.add("no-results");
+                        this.searchResults.append(li);
+                    }
+                } else {
+                    playerData = playerData.sort((a,b) => a.last_name > b.last_name ? 1: -1);
+                    playerData.forEach((player) => {
+                        let li = document.createElement("li");
+                        li.innerHTML = `${player.first_name} ${player.last_name}, ${player.team.abbreviation}`;
+                        li.setAttribute("data-first-name", player.first_name);
+                        li.setAttribute("data-last-name", player.last_name);
+                        li.setAttribute("data-id", player.id);
+                        li.classList.add("search-result");
+                        this.searchResults.append(li);
+                    })
+                }
+            });
+        }
+    }
+ ```
