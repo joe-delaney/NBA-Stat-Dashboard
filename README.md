@@ -3,6 +3,13 @@
 # Background
 The NBA Statistics Dashboard provides the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations (see the **Functionality & MVP** and **Bonus** sections for more info).
 
+# Technologies, Libraries, APIs
+This project will be implemented with the following technologies:
+* The D3 library to render the data visualizations
+* The balldontlie API to source the NBA statistics data
+* Webpack and Babel to bundle and transpile the source Javascript code
+* npm to manage project dependencies
+
 # Functionality & MVPs
 With the NBA Statistics Dashboard, users will be able to:
 * Search for past or present NBA players by name
@@ -10,22 +17,6 @@ With the NBA Statistics Dashboard, users will be able to:
 * Select the timeframe (start season and end season) to analyze
 * Choose from common NBA statistics and metrics such as points-per-game (ppg)
 * Toggle between different data visualizations to best present the data
-
-# Wireframes
-<img width="875" alt="NBA Statistics Dashboard Wireframe" src="https://user-images.githubusercontent.com/65872033/161177294-63b4ea8c-eaf3-4515-b9e1-d41300b33ee4.png">
-
-* Nav links include links to this project's Github repo, my LinkedIn, and the **About** modal.
-* The main content on the page will be the selected data visualization / chart.
-* To the left of the chart, there will be a key of the current chart showing the current selected players. 
-* To the bottom right of the chart, there will be a dropdown that allows the user to select the type of chart to display.
-* On top of the chart, there will be the user inputs in the form of a search bar for the player name and dropdowns to select the start season, the end season, and the metric.
-
-# Technologies, Libraries, APIs
-This project will be implemented with the following technologies:
-* The D3 library to render the data visualizations
-* The balldontlie API to source the NBA statistics data
-* Webpack and Babel to bundle and transpile the source Javascript code
-* npm to manage project dependencies
 
 # Implementation Timeline
 * **Friday Afternoon & Weekend:** Setup project, including getting webpack up and running. Spend time understanding and getting comfortable pulling data from the API. Practice rendering different kinds of charts and data visualizations using the D3 library. 
