@@ -1,4 +1,5 @@
-# NBA Statistics Dashboard
+# NBA Statistics Dashboard <img src="https://user-images.githubusercontent.com/65872033/162228109-b0beb6e8-3281-4b06-b710-d462465c0cf7.png" width="150" height="150" /> 
+
 
 # Description
 The NBA Statistics Dashboard provides the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations.
@@ -22,9 +23,237 @@ The NBA Statistics Dashboard provides the average NBA fan with the ability to ma
 
 ## Visualize Line Chart
 ![Line Chart Demo](https://user-images.githubusercontent.com/65872033/162226309-857f67e1-927b-4cd5-a7d9-7c7be96b6715.gif)
+```js
+drawLineChart(seasons, chartData) {
+        let svg = this.getSVG();
+
+        //Group the data by player
+        let players = d3.nest()
+            .key(d => d.name)
+            .entries(chartData);
+
+        // X axis
+        let x = d3.scaleLinear()
+            .domain(d3.extent(chartData, d => d.season))
+            .range([0, 1000]);
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(d3.axisBottom()
+                .scale(x)
+                .tickFormat(d3.format('d'))
+                .tickValues(d3.range(Math.min.apply(Math, seasons), Math.max.apply(Math, seasons) + 1, 1)));
+
+        // Y axis
+        let y = d3.scaleLinear()
+            .domain([d3.min(chartData, d=>d.metric)*.95, d3.max(chartData, d => d.metric)])
+            .range([this.height, 30]);
+        svg.append("g")
+            .call(d3.axisLeft().scale(y));
+        this.addYAxisLabel(svg);
+
+        //Set Color Scheme
+        let playerNames = players.map(function (d) { return d.key }) // list of players
+        let color = this.getColor(playerNames);
+
+        // Add the lines
+        svg.selectAll(".line")
+            .data(players)
+            .enter()
+            .append("path")
+            .attr("class", "line")
+            .attr("id", (d, i) => { return "line"+i })
+            .attr("fill", "none")
+            .attr("stroke", d => color(d.key))
+            .attr("stroke-width", 3)
+            .attr("d", function (d) {
+                return d3.line()
+                    .curve(d3.curveCardinal)
+                    .defined(d => d.metric !== 0)
+                    .x(d => x(d.season))
+                    .y(d => y(d.metric))
+                    (d.values)
+            })    
+
+        //Animate the lines
+        svg.selectAll(".line").style("opacity", "1");
+        svg.selectAll(".line").each(function(d,i) {
+            let totalLength = svg.select("#line" + i).node().getTotalLength();
+            svg.selectAll("#line"+i)
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2500)
+                .delay(100 * i)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .style("stroke-width", 3);
+        })
+
+        //Add toolTip and related line
+        let toolTip = d3.select("#chart-tool-tip");
+        const tooltipLine = svg.append('line').attr("class", "tool-tip-line");
+
+        let tipBox = svg.append('rect')
+            .attr('width', this.width)
+            .attr('height', this.height)
+            .attr('opacity', 0)
+            .on('mousemove', () => {
+                if ((d3.mouse(tipBox.node())[0]) > 1050) {
+                    if (toolTip) toolTip.style('display', 'none');
+                    if (tooltipLine) tooltipLine.style('display', 'none');
+                } else {
+                const season = Math.floor((x.invert(d3.mouse(tipBox.node())[0])));
+                
+                tooltipLine.attr('stroke', 'black')
+                    .attr('x1', x(season))
+                    .attr('x2', x(season))
+                    .attr('y1', 30)
+                    .attr('y2', this.height)
+                    .style('display', 'inline');
+
+                toolTip.html(season)
+                    .style('display', 'inline')
+                    .style('left', d3.event.pageX + 20 + "px")
+                    .style('top', d3.event.pageY - 20 + "px")
+                    .selectAll()
+                    .data(players).enter()
+                    .append('div')
+                    .style('color', d => d.color)
+                    .html(d => { 
+                        let metric;
+                        d.values.forEach((value) => {
+                            if(value.season === season) {
+                                metric = value.metric;
+                            }
+                        });
+                        return `${d.key}: ${metric}`}
+                        );
+                }
+            })
+            .on('mouseout', () => {
+                if (toolTip) toolTip.style('display', 'none');
+                if (tooltipLine) tooltipLine.style('display', 'none');
+            })
+        
+        this.addLegend(players, color);
+        this.addTitle(seasons);
+    }
+```
 
 ## Visualize Bar Chart
 ![Bar Chart Demo](https://user-images.githubusercontent.com/65872033/162226664-b7af1e5f-55b6-4416-96ac-bcb38f2251f9.gif)
+```js
+    drawBarChart(seasons, chartData) {
+        let svg = this.getSVG();
+
+        //Create values array from Y axis - min and max
+        let values = [];
+        chartData.forEach((row) => {
+            Object.keys(row).forEach((key) => {
+                if(key !== "season" && key !== 'metricLabel') {
+                    values.push(row[key]);
+                }
+            })
+        })
+
+        //Get each player name for subgroups
+        let players = chartData.map((row) => Object.keys(row));
+        players = players[0].slice(1, players[0].length-1);
+        
+        // X axis
+        let x = d3.scaleBand()
+            .domain(seasons)
+            .range([0, 1000])
+            .padding([0.2])
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .style("font-weight", 600)
+            .call(d3.axisBottom(x)
+                .tickFormat(d3.format('d'))
+                .tickSize(0));
+
+        // X Axis - subgroup for players
+        let xSubgroup = d3.scaleBand()
+            .domain(players)
+            .range([0, x.bandwidth()])
+
+        //Y Axis
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(values, d => d * 1.25)])
+            .range([this.height, 30]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
+        this.addYAxisLabel(svg);
+
+        //Set Color Scheme
+        let color = this.getColor(players);
+
+        let toolTip = d3.select("#chart-tool-tip");
+
+        // Show the bars
+        let bars = svg.append("g")
+            .selectAll("g")
+            .data(chartData)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) { return "translate(" + x(d.season) + ",0)"; })
+        
+        bars.selectAll("rect")
+            .data(function (d) { return players.map(function (key) { return { key: key, value: d[key]}; }); })
+            .enter().append("rect")
+            .attr("x", function (d) { return xSubgroup(d.key); })
+            .attr("width", xSubgroup.bandwidth())
+            .attr("y", function (d) { return y(0); })
+            .attr("height", function (d,i) { return this.height - y(0);}.bind(this))
+            .attr("fill", function (d) { return color(d.key); })
+            .attr("value", function (d) {return d.value})
+            .attr("idx", function(d) {return d.idx})
+            .on("mouseover", function (d) {  
+                //Add toolTip on hover
+                toolTip.style("left", d3.event.pageX + 10 + "px")
+                toolTip.style("top", d3.event.pageY - 35 + "px")
+                toolTip.style("display", "inline-block")
+                toolTip.style("opacity", "0.9");
+
+                //Get the data associated with bar hovered over
+                let barData = this.__data__
+
+                toolTip.html(barData.key + "<br>" + barData.value);
+                
+                //Add styling to bar on hover
+                d3.select(this)
+                    .style("fill", "#FFFF99")
+                    .style("stroke", "Black")
+                    .style("stroke-width", "1.8px")
+                    .style("stroke-opacity", "1");
+                
+            })
+            .on("mouseout", function (d) {
+                //Remove styling on mouseout
+                d3.select(this)
+                    .style("fill", color(d.key))
+                    .transition().duration(200)
+                    .style("stroke-opacity", "0");
+
+                //Remove tooltip on mouseout
+                toolTip.style("display", "none")
+            });
+        
+        //Animate bars
+        bars.selectAll("rect")
+            .transition()
+            .delay(function (d) { return Math.random() * 1000; })
+            .duration(1000)
+            .attr("y", function (d) { return y(d.value); })
+            .attr("height", function (d) { return this.height - y(d.value); }.bind(this));
+
+        let legendData = players.map((player) => { return {key: player, value: player}});
+        this.addLegend(legendData, color);
+        this.addTitle(seasons);
+    }
+ ```
 
 # Functionality & MVPs
 With the NBA Statistics Dashboard, users will be able to:
