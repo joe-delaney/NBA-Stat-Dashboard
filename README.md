@@ -1,7 +1,7 @@
-# JS Project Proposal: NBA Statistics Dashboard
+# NBA Statistics Dashboard
 
 # Background
-The NBA Statistics Dashboard will provide the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations (see the **Functionality & MVP** and **Bonus** sections for more info).
+The NBA Statistics Dashboard provides the average NBA fan with the ability to manipulate and analyze player-specific data in an easy and interactive way. The goal of this dashboard is to allow users to understand the NBA data trends and player comparisons that they are the most interested in. Users will have complete control to select any past or present NBA players and compare them across a variety of seasons, metrics, and data visualizations (see the **Functionality & MVP** and **Bonus** sections for more info).
 
 # Functionality & MVPs
 With the NBA Statistics Dashboard, users will be able to:
@@ -10,10 +10,6 @@ With the NBA Statistics Dashboard, users will be able to:
 * Select the timeframe (start season and end season) to analyze
 * Choose from common NBA statistics and metrics such as points-per-game (ppg)
 * Toggle between different data visualizations to best present the data
-
-In addition, this project will include:
-* An About modal describing the instructions for using the dashboard
-* A production README
 
 # Wireframes
 <img width="875" alt="NBA Statistics Dashboard Wireframe" src="https://user-images.githubusercontent.com/65872033/161177294-63b4ea8c-eaf3-4515-b9e1-d41300b33ee4.png">
