@@ -147,7 +147,7 @@ drawLineChart(seasons, chartData) {
     drawBarChart(seasons, chartData) {
         let svg = this.getSVG();
 
-        //Create values array from Y axis - min and max
+        //Create values array for Y axis - min and max
         let values = [];
         chartData.forEach((row) => {
             Object.keys(row).forEach((key) => {
