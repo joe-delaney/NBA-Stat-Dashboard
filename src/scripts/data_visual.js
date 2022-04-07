@@ -49,6 +49,7 @@ export default class DataVisual {
             .call(d3.axisLeft().scale(y));
         this.addYAxisLabel(svg);
 
+        //Set Color Scheme
         let playerNames = players.map(function (d) { return d.key }) // list of players
         let color = this.getColor(playerNames);
 
@@ -71,8 +72,8 @@ export default class DataVisual {
                     (d.values)
             })    
 
+        //Animate the lines
         svg.selectAll(".line").style("opacity", "1");
-
         svg.selectAll(".line").each(function(d,i) {
             let totalLength = svg.select("#line" + i).node().getTotalLength();
             svg.selectAll("#line"+i)
@@ -86,10 +87,11 @@ export default class DataVisual {
                 .style("stroke-width", 3);
         })
 
+        //Add toolTip and related line
         let toolTip = d3.select("#chart-tool-tip");
         const tooltipLine = svg.append('line').attr("class", "tool-tip-line");
 
-        let tipBox = svg./*selectAll().data(players).enter().*/append('rect')
+        let tipBox = svg.append('rect')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('opacity', 0)
@@ -148,7 +150,7 @@ export default class DataVisual {
             })
         })
 
-        //Get each player for subgroups (remove season and metriclabel)
+        //Get each player name for subgroups
         let players = chartData.map((row) => Object.keys(row));
         players = players[0].slice(1, players[0].length-1);
         
@@ -178,6 +180,7 @@ export default class DataVisual {
             .call(d3.axisLeft(y));
         this.addYAxisLabel(svg);
 
+        //Set Color Scheme
         let color = this.getColor(players);
 
         let toolTip = d3.select("#chart-tool-tip");
@@ -201,6 +204,7 @@ export default class DataVisual {
             .attr("value", function (d) {return d.value})
             .attr("idx", function(d) {return d.idx})
             .on("mouseover", function (d) {  
+                //Add toolTip on hover
                 toolTip.style("left", d3.event.pageX + 10 + "px")
                 toolTip.style("top", d3.event.pageY - 35 + "px")
                 toolTip.style("display", "inline-block")
@@ -211,6 +215,7 @@ export default class DataVisual {
 
                 toolTip.html(barData.key + "<br>" + barData.value);
                 
+                //Add styling to bar on hover
                 d3.select(this)
                     .style("fill", "#FFFF99")
                     .style("stroke", "Black")
@@ -219,14 +224,17 @@ export default class DataVisual {
                 
             })
             .on("mouseout", function (d) {
+                //Remove styling on mouseout
                 d3.select(this)
                     .style("fill", color(d.key))
                     .transition().duration(200)
                     .style("stroke-opacity", "0");
 
+                //Remove tooltip on mouseout
                 toolTip.style("display", "none")
             });
         
+        //Animate bars
         bars.selectAll("rect")
             .transition()
             .delay(function (d) { return Math.random() * 1000; })
@@ -244,7 +252,7 @@ export default class DataVisual {
         d3.selectAll("svg").remove();
     }
 
-    //The following methods will be used by each chart
+    //The following helper methods will be used by each chart
 
     //get label based on selected metric
     getLabel(metricLabel) {
