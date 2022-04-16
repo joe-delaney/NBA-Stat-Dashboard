@@ -89,7 +89,7 @@
     border-radius: 5px;
 }
 
-.demo-button:hover, .color-palette-select:hover {
+.demo-button:hover {
     background-color: lightgrey;
 }
 
