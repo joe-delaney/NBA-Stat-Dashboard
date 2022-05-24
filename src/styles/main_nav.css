@@ -9,6 +9,7 @@
 .main-logo-items {
     display: flex;
     align-items: center;
+    margin-left: 30px;
 }
 
 .main-logo {
@@ -32,8 +33,15 @@
     height: 30px;
 }
 
-#about-icon {
-    height: 34px;
-    width: 34px;
+.instructions {
+    height: 100%;
     padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.instructions:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }

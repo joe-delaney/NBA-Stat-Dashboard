@@ -1,7 +1,7 @@
 export default class AboutModal {
     constructor() {
         this.aboutModal = document.querySelector("#about-modal");
-        this.aboutButton = document.querySelector(".about-button");
+        this.aboutButton = document.querySelector(".instructions");
         this.span = document.getElementsByClassName("close")[0];
 
         this.aboutButton.addEventListener("click", (e) => {
