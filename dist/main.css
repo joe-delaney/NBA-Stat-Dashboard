@@ -123,13 +123,11 @@ body {
 .player-search-input {
   width: 700px;
   height: 33px;
-  border-radius: 2px;
+  border-radius: 10px;
   border: none;
   border-bottom: 2px solid white;
   padding-left: 10px;
   padding-right: 5px;
-  /* background-color: transparent;
-  color: white ;*/
   font-size: 16px;
 }
 
@@ -147,6 +145,7 @@ body {
   margin-top: 35px;
   max-height: 160px;
   overflow: auto;
+  border-radius: 10px;
 }
 
 .search-result {
