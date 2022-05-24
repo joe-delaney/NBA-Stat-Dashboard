@@ -258,13 +258,13 @@ export default class DataVisual {
     getLabel(metricLabel) {
         switch (metricLabel) {
             case "ppg":
-                return "Points per Game";
+                return "Average points per Game";
             case "apg":
-                return "Assists per Game";
+                return "Average assists per Game";
             case "rpg":
-                return "Rebounds per Game";
+                return "Average rebounds per Game";
             case "spg":
-                return "Steals per Game";
+                return "Average steals per Game";
             case "fg_pct":
                 return "Field Goal %";
             case "fg3_pct":
