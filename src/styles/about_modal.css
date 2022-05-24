@@ -21,6 +21,7 @@
   border-radius: 5px;
   box-shadow: 0 1px 10px;
   width: 33%;
+  max-width: 540px;
 }
 
 /* The Close Button */
